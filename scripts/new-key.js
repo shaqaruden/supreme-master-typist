@@ -6,6 +6,7 @@ input.addEventListener('keydown', function(e) {
     if (e.key === "Unidentified" || e.key === "Process") {
         window.unknownKey = true;
     } else {
+        const before = fakeInput.innerText;
         // Detect Enter or Space
         if (e.key === "Enter" || e.key === " ") {
             e.preventDefault();
@@ -43,6 +44,10 @@ input.addEventListener('keydown', function(e) {
             if (!specialKeys.includes(e.key)) {
                 fakeInput.innerText += e.key;
             }
+        }
+        if (e.key !== "Enter" && e.key !== " " && e.key !== "Backspace" &&
+            e.key !== "Tab" && e.key !== "Escape") {
+            testTimeline.input(before, fakeInput.innerText, correctAnswer);
         }
     }
 });
@@ -192,6 +197,8 @@ function processUnknown(key) {
         }
     }
 
+    // Record only newly inserted mobile characters, before the observer can alter them.
+    testTimeline.input(fakeInput.innerText, print, correctAnswer);
     // Place the container value in the cosmetic input field
     fakeInput.innerText = print;
 }
@@ -229,6 +236,7 @@ function processNewLine() {
 function processLastWord() {
     if (!timeLimitMode && score == (scoreMax - 1) && checkAnswer() && gameON) {
         console.log('game over');
+        testTimeline.complete(correctAnswer);
         endGame();
     }
 }
@@ -237,6 +245,7 @@ function processLastWord() {
 function processEnter() {
     if (checkAnswer() && gameON) {
         // Handles correct word
+        testTimeline.complete(correctAnswer);
         handleCorrectWord();
 
         // Updates scores on the screen
@@ -252,6 +261,7 @@ function processEnter() {
         fakeInput.innerText = '';
         letterIndex = 0;
     } else {
+        testTimeline.input(fakeInput.innerText, fakeInput.innerText + ' ', correctAnswer);
         console.log('error space');
         input.value += ' ';
         fakeInput.innerText += ' '; // used a non-breaking space due to flexbox

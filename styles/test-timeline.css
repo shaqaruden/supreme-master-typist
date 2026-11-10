@@ -1,0 +1,54 @@
+#testTimeline[hidden] { display: none; }
+#testTimeline {
+    box-sizing: border-box;
+    width: min(100%, 900px);
+    margin: 1.5rem auto;
+    padding: 1.25rem;
+    border: 1px solid var(--grey);
+    border-radius: .75rem;
+    background: var(--foreground);
+    color: var(--text-color);
+    font-family: 'Radio Canada', sans-serif;
+    font-size: 1rem;
+}
+#testTimeline h2 { margin: 0 0 .6rem; font-size: 1.35rem; }
+#testTimeline p { margin: .5rem 0; line-height: 1.5; }
+#testTimeline .timelineLegend span { color: var(--red); margin-left: 1rem; }
+#testTimeline .timelineScroll { overflow-x: auto; padding: .25rem 0; }
+#timelinePlot { position: relative; height: 190px; }
+#timelinePlot svg { display: block; overflow: visible; }
+#timelinePlot text { fill: var(--text-color); font-size: 12px; }
+#timelinePlot .timelineLane { stroke: var(--grey); stroke-width: 1; }
+#timelinePlot .timelineEvent {
+    position: absolute;
+    transform: translate(-50%, -50%);
+    display: grid;
+    place-items: center;
+    box-sizing: border-box;
+    width: 24px;
+    height: 24px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--foreground);
+    color: var(--text-color);
+    font: bold 15px/1 sans-serif;
+    cursor: pointer;
+}
+#timelinePlot .timelineEvent.error { color: var(--red); font-size: 24px; }
+#timelinePlot .timelineEvent:is(:hover, :focus-visible, [aria-pressed='true']) {
+    outline: 2px solid currentColor;
+    outline-offset: 1px;
+    z-index: 1;
+}
+#timelineDetails { min-height: 3em; overflow-wrap: anywhere; }
+@media (max-width: 600px) {
+    #testTimeline { padding: .75rem; }
+    #testTimeline .timelineLegend span { display: inline-block; }
+}
+/* Keep the fixed-width graph from setting the surrounding grid's minimum width. */
+#testTimeline { contain: inline-size; min-width: 0; font-size: 14px; flex-shrink: 0; }
+#testTimeline h2 { font-size: 18px; }
+main.contain:has(#testTimeline:not([hidden])) { overflow-y: auto; }
+#main:has(#testTimeline:not([hidden])) { height: auto; min-height: 100%; }

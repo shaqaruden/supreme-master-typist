@@ -46,6 +46,7 @@
    <meta name="twitter:card" content="summary_large_image">
 
    <script type="text/javascript" src="scripts/theme-stuff-re.min.js"></script>
+   <link rel="stylesheet" href="styles/test-timeline.css">
 </head>
 <body>
    <curtain class="dispose" id="sub">
@@ -368,6 +369,15 @@
                   <div id="wpmText"></div>
                </div>
             </div>
+            <section id="testTimeline" aria-labelledby="timelineTitle" hidden>
+               <h2 id="timelineTitle">Test timeline</h2>
+               <p class="timelineLegend">● Completed word <span>× Mistake</span></p>
+               <p id="timelineSummary"></p>
+               <div class="timelineScroll" tabindex="0" aria-label="Typing event timeline; scroll horizontally for more events">
+                  <div id="timelinePlot"></div>
+               </div>
+               <p id="timelineDetails" aria-live="polite">Select a marker to see its details.</p>
+            </section>
             <div class="cheatsheetContainer">
                <div class="cheatsheet"></div>
                <div class="openUIButton">
@@ -397,6 +407,7 @@
    <script type="text/javascript" src="scripts/layout-info.min.js"></script>
    <script type="text/javascript" src="scripts/word-list.min.js"></script>
    <script type="text/javascript" src="scripts/keyboard-divs.min.js"></script>
+   <script type="text/javascript" src="scripts/test-timeline.min.js"></script>
    <script type="text/javascript" src="scripts/app.min.js"></script>
    <script type="text/javascript" src="scripts/new-key.min.js"></script>
    <script type="text/javascript" src="scripts/camp-calls.min.js"></script>

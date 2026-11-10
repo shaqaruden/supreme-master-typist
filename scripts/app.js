@@ -1253,6 +1253,8 @@ resetButton.addEventListener('click', ()=> {
 // button is called or when a level is changed
 // Set a new prompt word and change variable text
 function reset() {
+    testTimeline.reset();
+    document.querySelector("#testTimeline").hidden = true;
     // reset nav first
     navInit();
 
@@ -1384,6 +1386,7 @@ function checkAnswer() {
 }
 
 function endGame() {
+    renderTestTimeline(testTimeline.finish());
     // erase prompt
     prompt.classList.toggle('dispose');
 

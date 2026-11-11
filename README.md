@@ -1,12 +1,17 @@
-# Colemak Camp
-A fork of Colemak Club that overhauls the entire experience. Brings support for custom themes and a wider range of display sizes.
+# Dvokak Dubs
+A keyboard practice app for Dvorak, Colemak, and other layouts, with typing stats and a timeline showing exactly where mistakes happen.
 
-It is hosted on this repo's [Github Pages](https://colemakcamp.github.io/).
+Try [Dvokak Dubs](https://shaqaruden.github.io/dvokakdubs/), hosted with GitHub Pages.
 
-Note that this project is a fork of [Colemak Club](https://github.com/gnusenpai/colemakclub), which itself is a fork of [Colemak Academy](https://colemak.academy/).
+Dvokak Dubs is a fork of [Colemak Camp](https://github.com/ColemakCamp/colemakcamp.github.io), which is a fork of [Colemak Club](https://github.com/gnusenpai/colemakclub), which itself is a fork of [Colemak Academy](https://colemak.academy/).
 
 ## Key Features
-The following features are new in Colemak Camp:
+Dvokak Dubs adds:
+- A current-test event timeline showing completed words and mistakes in red.
+- Selectable events with timestamps and expected versus typed characters.
+- A results layout that keeps typing stats and Reset visible.
+
+Features inherited from Colemak Camp include:
 - Responsive design, fits in more display sizes.
 - Customizable theme colors, including light and dark modes.
 - Several more menu options are now saved in local storage, thus remembered if you refresh.

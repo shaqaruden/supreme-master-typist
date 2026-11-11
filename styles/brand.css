@@ -1,0 +1,10 @@
+header left .brand-wordmark {
+    height: auto;
+    color: var(--text-color);
+    font-family: 'Radio Canada', sans-serif;
+    font-size: 2.4rem;
+    font-weight: 700;
+    line-height: 1.2;
+    white-space: nowrap;
+}
+header left:hover .brand-wordmark { color: var(--text-stark); }

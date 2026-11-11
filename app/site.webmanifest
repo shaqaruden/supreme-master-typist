@@ -1,7 +1,7 @@
 {
-    "name": "Colemak Camp",
-    "short_name": "ColemakCamp",
-    "description": "A free and easy way to learn touch typing on Colemak and other keyboard layouts.",
+    "name": "Dvokak Dubs",
+    "short_name": "Dvokak Dubs",
+    "description": "Practice Dvorak, Colemak, and other keyboard layouts with timed tests and a mistake timeline.",
     "icons": [
         {
             "src": "192.png",

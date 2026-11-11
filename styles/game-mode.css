@@ -289,3 +289,18 @@ html[data-game-mode='true'] .cheatsheet[data-game-keyboard-error='true']::after 
 @media (prefers-reduced-motion: reduce) {
     html[data-game-mode='true'] .cheatsheet key.rpgui-container.framed-grey.game-key-pressed { transform: none; }
 }
+
+/* RPGUI cursors, scoped to Game Mode. Inherit the selected cursor through icons
+   and labels so moving within a control never switches back to a system cursor. */
+html[data-game-mode='true'] { --game-cursor: url('../vendor/rpgui/img/cursor/default.png'), default; }
+html[data-game-mode='true'] body,
+html[data-game-mode='true'] body * { cursor: var(--game-cursor) !important; }
+html[data-game-mode='true'] :is(a[href],button,btn,[role='button'],[role='tab'],[role='option'],select,input[type='checkbox'],input[type='radio'],input[type='range'],label[for],header left,sidebar li,menubar li,list li,row.custom > key,.openUIButton,.customLevels li,.customButtons li) {
+    --game-cursor: url('../vendor/rpgui/img/cursor/point.png') 10 0, pointer;
+}
+html[data-game-mode='true'] :is(input:not([type='checkbox']):not([type='radio']):not([type='range']):not([type='button']):not([type='submit']),textarea,[contenteditable='true']) {
+    --game-cursor: url('../vendor/rpgui/img/cursor/select.png') 10 0, text;
+}
+html[data-game-mode='true'] :is(:disabled,[aria-disabled='true']) {
+    --game-cursor: url('../vendor/rpgui/img/cursor/default.png'), default !important;
+}

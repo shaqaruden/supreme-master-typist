@@ -290,20 +290,35 @@ html[data-game-mode='true'] :is(:disabled,[aria-disabled='true']) {
     --game-cursor: url('../vendor/rpgui/img/cursor/default.png'), default !important;
 }
 
-/* Dropdown frames replace the two button skins; the native picker stays intact. */
-html[data-game-mode='true'] header right #selectors .headerDropdown.rpgui-container {
-    border-width: 5px; border-image-width: 6px; border-radius: 0; padding: 0 5px 0 12px; gap: 6px;
+/* RPGUI's actual dropdown sprites, shared by its header and option list. */
+.rpguiDropdownHeader[hidden],.rpguiDropdownList[hidden] { display: none !important; }
+html[data-game-mode='true'] header right #selectors .headerDropdown {
+    display: flex; flex-direction: column; align-items: stretch; justify-content: center;
+    border: 0; background: none; padding: 0; gap: 3px;
 }
-html[data-game-mode='true'] .headerDropdown label { color: #f4ead4; font: 10px/1.4 'Press Start 2P',monospace; }
-html[data-game-mode='true'] header right #selectors .headerDropdown select {
-    font: 10px/1.4 'Press Start 2P',monospace; color: #fff1bd; max-width: 200px;
-    color-scheme: dark; outline: none;
+html[data-game-mode='true'] .headerDropdown > label { display: block; color: #fff5dc; font: 8px/1.2 'Press Start 2P',monospace; }
+html[data-game-mode='true'] .rpguiDropdownHeader {
+    display: flex; align-items: center; gap: 9px; min-height: 34px; height: 34px;
+    padding: 0 12px; margin: 0; text-align: left; font: 10px/1.4 'Press Start 2P',monospace;
+    white-space: nowrap; min-width: 150px; border-radius: 0;
 }
-html[data-game-mode='true'] .headerDropdown select option { color: #fff1bd; background: #302b33; font-family: monospace; }
+html[data-game-mode='true'] .rpguiDropdownHeader .dropdownValue { overflow: hidden; text-overflow: ellipsis; }
+html[data-game-mode='true'] .rpguiDropdownHeader:focus-visible { outline: 2px solid #ffe4a3; outline-offset: 2px; }
+html[data-game-mode='true'] .rpguiDropdownList {
+    position: fixed; z-index: 1000; box-sizing: border-box; margin: 0; overflow-y: auto; transition: none;
+    overscroll-behavior: contain; scrollbar-color: #d5ad73 #704530;
+}
+html[data-game-mode='true'] .rpguiDropdownList li {
+    height: auto; min-height: 30px; box-sizing: border-box; padding: 7px 12px;
+    font: 10px/1.5 'Press Start 2P',monospace; white-space: nowrap;
+}
+html[data-game-mode='true'] .rpguiDropdownList li:is(:hover,:focus,[aria-selected='true']) { color: #ffff00; outline: none; }
+html[data-game-mode='true'] .rpguiDropdownList li:focus-visible { box-shadow: inset 2px 0 #ffff00; }
 @media (max-width: 980px) {
-    html[data-game-mode='true'] header right #selectors .headerDropdown select { font-size: 8px; }
+    html[data-game-mode='true'] .rpguiDropdownHeader { font-size: 8px; min-width: 120px; }
 }
 @media (max-width: 600px) {
-    html[data-game-mode='true'] header right #selectors .headerDropdown.rpgui-container { padding-left: 7px; padding-right: 2px; gap: 0; }
-    html[data-game-mode='true'] header right #selectors .headerDropdown select { font-size: 7px; max-width: 112px; }
+    html[data-game-mode='true'] .headerDropdown > label { font-size: 6px; }
+    html[data-game-mode='true'] .rpguiDropdownHeader { font-size: 7px; padding: 0 5px; min-width: 92px; max-width: 123px; gap: 5px; }
+    html[data-game-mode='true'] .rpguiDropdownList li { font-size: 9px; }
 }

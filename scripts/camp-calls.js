@@ -2,6 +2,7 @@
 function updateSelectors() {
     document.querySelector('#layoutSelect').value = layout.getAttribute('data-value');
     document.querySelector('#keyboardSelect').value = keyboard.getAttribute('data-value');
+    window.GameDropdowns?.sync();
 }
 updateSelectors();
 document.querySelector('#layoutSelect').addEventListener('change',event=>changeLayout(event.target.value));

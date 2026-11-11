@@ -21,7 +21,7 @@ const GameMode = (() => {
     }
     const frames=[
         ['.cheatsheet','framed-golden-2'],['#gameModeToggle','framed-golden-2'],['.typingArea','framed-golden'],['#testTimeline','framed'],['#progressDialog,#rankDialog,#sub card','framed-golden-2'],
-        ['.headerDropdown,#drillBanner','framed-grey'],['#gameAnnouncement','framed-golden'],['.cheatsheet key,.rankStep,sidebar .nav li span','framed-grey']
+        ['#drillBanner','framed-grey'],['#gameAnnouncement','framed-golden'],['.cheatsheet key,.rankStep,sidebar .nav li span','framed-grey']
     ];
     function decorate() {
         for(const [node,classes] of decorated){
@@ -126,7 +126,7 @@ const GameMode = (() => {
         root.dataset.gameScene=id;
         root.style.setProperty('--game-background',`url("${new URL(scene.image,document.baseURI).href}")`);
         root.style.setProperty('--game-background-position',scene.position);
-        updateButton();observeDecorations();observeKeyboard();
+        updateButton();observeDecorations();observeKeyboard();window.GameDropdowns?.sync();
     }
     function setEnabled(value) {
         reset();enabled=value===true;

@@ -8,3 +8,8 @@ header left .brand-wordmark {
     white-space: nowrap;
 }
 header left:hover .brand-wordmark { color: var(--text-stark); }
+
+/* The longer wordmark yields space to keyboard controls on smaller screens. */
+@media (max-width: 900px) {
+    header left .brand-wordmark { display: none; }
+}

@@ -21,7 +21,7 @@ const GameMode = (() => {
     }
     const frames=[
         ['.cheatsheet','framed-golden-2'],['#gameModeToggle','framed-golden-2'],['.typingArea','framed-golden'],['#testTimeline','framed'],['#progressDialog,#rankDialog,#sub card','framed-golden-2'],
-        ['#drillBanner','framed-grey'],['#gameAnnouncement','framed-golden'],['.cheatsheet key,.rankStep,sidebar .nav li span','framed-grey']
+        ['.headerDropdown,#drillBanner','framed-grey'],['#gameAnnouncement','framed-golden'],['.cheatsheet key,.rankStep,sidebar .nav li span','framed-grey']
     ];
     function decorate() {
         for(const [node,classes] of decorated){

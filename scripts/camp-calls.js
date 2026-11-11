@@ -1,102 +1,11 @@
-/* New JS functions are added here. Modifications are made in original files. */
-
-// changeLayout(value) changeKeyboard(value)
-// Change Selected in Selector
-function changeSelected(target, parent) {
-    if (parent === 'layout') {
-        changeLayout(target.getAttribute('data-value'));
-    } else if (parent === 'keyboard') {
-        changeKeyboard(target.getAttribute('data-value'));
-    }
-}
-
-// Update selector text and local value
+/* Native header dropdowns share the existing layout/keyboard change handlers. */
 function updateSelectors() {
-    let lVal = layout.getAttribute('data-value'),
-        kVal = keyboard.getAttribute('data-value');
-    
-    layout.querySelector('span').innerText = document.querySelector(`li[data-value=${lVal}]`).innerText;
-    keyboard.querySelector('span').innerText = document.querySelector(`li[data-value=${kVal}]`).innerText;
-    ['layout','keyboard'].forEach(id=>{
-        const group=document.querySelector('#'+id), button=group.querySelector('btn');
-        button.setAttribute('aria-label',(id==='layout'?'Layout: ':'Keyboard: ')+group.querySelector('span').innerText);
-        group.querySelectorAll('list li').forEach(option=>{
-            option.setAttribute('role','option');option.tabIndex=-1;
-            option.setAttribute('aria-selected',String(option.dataset.value===group.dataset.value));
-        });
-    });
+    document.querySelector('#layoutSelect').value = layout.getAttribute('data-value');
+    document.querySelector('#keyboardSelect').value = keyboard.getAttribute('data-value');
 }
 updateSelectors();
-
-// Close all lists first
-function closeSelectors() {
-    let lists = document.querySelectorAll('#selectors list');
-
-    for (let x = 0; x < lists.length; x++) {
-        if (!lists[x].classList.contains('close')) {
-            lists[x].classList.add('close');
-            lists[x].parentElement.querySelector('btn').setAttribute('aria-expanded','false');
-            setTimeout(function() {
-                lists[x].classList.add('hide');
-            }, 100);
-        }
-    }
-}
-
-// Allow drop down of selectors
-function toggleSelectors(key) {
-    let list = document.querySelector(`#${key} list`);
-
-    if (list.classList.contains('close')) {
-        closeSelectors();
-        list.classList.remove('hide');
-        list.parentElement.querySelector('btn').setAttribute('aria-expanded','true');
-        setTimeout(function() {
-            list.classList.remove('close');
-        }, 10);
-    } else {
-        list.classList.add('close');
-        list.parentElement.querySelector('btn').setAttribute('aria-expanded','false');
-        setTimeout(function() {
-            list.classList.add('hide');
-        }, 100);
-    }
-}
-
-// Listen to mousedown on selectors
-document.addEventListener('mousedown', function(event) {
-    if (event.button !== 0) {return;}
-
-    let target = event.target,
-        selArray = ['layout','keyboard'];
-    
-    for (let x = 0; x < selArray.length; x++) {
-        if (document.getElementById(selArray[x]) === target || document.getElementById(selArray[x]).contains(target)) {
-            window.selectorDown = selArray[x];
-        }
-    }
-});
-
-// Listen to mouseup on selectors and trigger click if target matches mousedown event
-document.addEventListener('mouseup', function(event) {
-    if (event.button !== 0) {return;}
-
-    let target = event.target,
-        selArray = ['layout','keyboard'];
-
-    for (let x = 0; x < selArray.length; x++) {
-        if (window.selectorDown === selArray[x] && document.getElementById(selArray[x]).contains(target)) {
-            toggleSelectors(selArray[x]);
-            if (target.tagName.match(/^li$/i)) {
-                changeSelected(target, selArray[x]);
-            }
-            return;
-        }
-    }
-
-    // Also closes dropdowns if clicked elsewhere
-    closeSelectors();
-});
+document.querySelector('#layoutSelect').addEventListener('change',event=>changeLayout(event.target.value));
+document.querySelector('#keyboardSelect').addEventListener('change',event=>changeKeyboard(event.target.value));
 
 // Clicking the backdrop is the same as clicking discard in the keyboard edit dialogue
 document.querySelector('#sub backdrop').addEventListener('click', function() {
@@ -200,34 +109,7 @@ document.addEventListener('click', function(e) {
         window.location.reload(true);
     }
 });
-// Keyboard support for the existing selector controls; mouse handling stays above.
-document.addEventListener('keydown',function(event){
-    const button=event.target.closest?.('#selectors btn');
-    if(button && ['Enter',' ','ArrowDown','ArrowUp'].includes(event.key)){
-        event.preventDefault();
-        const id=button.parentElement.id;
-        if(id==='keymapping'){if(event.key==='Enter'||event.key===' ')button.click();return;}
-        const list=button.parentElement.querySelector('list');
-        const opening=list.classList.contains('close');
-        if(opening || event.key==='Enter' || event.key===' ')toggleSelectors(id);
-        if(opening)list.classList.remove('close');
-        if(opening || event.key.startsWith('Arrow')){
-            const selected=list.querySelector('[aria-selected="true"]') || list.querySelector('li');selected?.focus();
-        }
-        return;
-    }
-    const option=event.target.closest?.('#selectors list li');
-    if(option){
-        const group=option.closest('#layout,#keyboard'),options=[...group.querySelectorAll('list li')];
-        let index=options.indexOf(option);
-        if(event.key==='ArrowDown')index=(index+1)%options.length;
-        else if(event.key==='ArrowUp')index=(index+options.length-1)%options.length;
-        else if(event.key==='Home')index=0;
-        else if(event.key==='End')index=options.length-1;
-        else if(event.key==='Enter'||event.key===' '){event.preventDefault();changeSelected(option,group.id);closeSelectors();group.querySelector('btn').focus();return;}
-        else if(event.key==='Escape'){event.preventDefault();closeSelectors();group.querySelector('btn').focus();return;}
-        else if(event.key==='Tab'){closeSelectors();return;}
-        else return;
-        event.preventDefault();options[index].focus();
-    }else if(event.key==='Escape')closeSelectors();
+// The mapping control remains a toggle; native selects handle their own keys.
+document.querySelector('#keymapping btn').addEventListener('keydown',event=>{
+    if(event.key==='Enter'||event.key===' '){event.preventDefault();event.currentTarget.click();}
 });

@@ -101,56 +101,32 @@
          <right>
             <button type="button" id="openProgress" class="trainingButton">Progress</button>
             <div id="selectors">
-               <div id="layout">
-                  <btn role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false" aria-controls="layoutOptions" data-tippy-content="Change Keyboard Layout" data-tippy-placement="bottom-end">
-                     <label>Layout:</label>
-                     <span></span>
-                     <i class="fa fa-arrow-bottom"></i>
-                  </btn>
-                  <list id="layoutOptions" role="listbox" aria-label="Keyboard layout" class="close hide">
-                     <ul>
-                        <gr>
-                           <li data-value="colemak">Colemak</li>
-                           <li data-value="colemakdh">Colemak-DH</li>
-                        </gr>
-                        <gr>
-                           <li data-value="tarmak">Tarmak</li>
-                           <li data-value="tarmakdh">Tarmak-DH</li>
-                        </gr>
-                        <gr>
-                           <li data-value="soul">Soul</li>
-                           <li data-value="niro">Niro</li>
-                        </gr>
-                        <gr>
-                           <li data-value="azerty">AZERTY</li>
-                           <li data-value="dvorak">Dvorak</li>
-                           <li data-value="lefthandeddvorak">Dvorak (Left)</li>
-                           <li data-value="qwerty">QWERTY</li>
-                           <li data-value="workman">Workman</li>
-                           <li data-value="canary">Canary</li>
-                        </gr>
-                        <gr>
-                           <li data-value="custom">Custom</li>
-                        </gr>
-                     </ul>
-                  </list>
+               <div id="layout" class="headerDropdown">
+                  <label for="layoutSelect">Layout:</label>
+                  <select id="layoutSelect" aria-label="Keyboard layout">
+                     <option value="colemak">Colemak</option>
+                     <option value="colemakdh">Colemak-DH</option>
+                     <option value="tarmak">Tarmak</option>
+                     <option value="tarmakdh">Tarmak-DH</option>
+                     <option value="soul">Soul</option>
+                     <option value="niro">Niro</option>
+                     <option value="azerty">AZERTY</option>
+                     <option value="dvorak">Dvorak</option>
+                     <option value="lefthandeddvorak">Dvorak (Left)</option>
+                     <option value="qwerty">QWERTY</option>
+                     <option value="workman">Workman</option>
+                     <option value="canary">Canary</option>
+                     <option value="custom">Custom</option>
+                  </select>
                </div>
-               <div id="keyboard">
-                  <btn role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false" aria-controls="keyboardOptions" data-tippy-content="Change Keyboard Type" data-tippy-placement="bottom-start">
-                     <label>Keyboard:</label>
-                     <span></span>
-                     <i class="fa fa-arrow-bottom"></i>
-                  </btn>
-                  <list id="keyboardOptions" role="listbox" aria-label="Keyboard type" class="close hide">
-                     <ul>
-                        <gr>
-                           <li data-value="ansi">ANSI</li>
-                           <li data-value="iso">ISO</li>
-                           <li data-value="ortho">Ortho</li>
-                           <li data-value="ortho_extended">OrthoX</li>
-                        </gr>
-                     </ul>
-                  </list>
+               <div id="keyboard" class="headerDropdown">
+                  <label for="keyboardSelect">Keyboard:</label>
+                  <select id="keyboardSelect" aria-label="Keyboard type">
+                     <option value="ansi">ANSI</option>
+                     <option value="iso">ISO</option>
+                     <option value="ortho">Ortho</option>
+                     <option value="ortho_extended">OrthoX</option>
+                  </select>
                </div>
                <div id="keymapping">
                   <btn role="button" tabindex="0" aria-label="Keyboard mapping" aria-pressed="false" data-tippy-content="Toggle Keyboard Mapping" data-tippy-placement="bottom-end">

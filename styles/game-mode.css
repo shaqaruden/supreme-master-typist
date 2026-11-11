@@ -94,7 +94,6 @@ html[data-game-mode='true'] .heatKey.hasErrors { background: color-mix(in srgb,#
 html[data-game-mode='true'] .rankStep.rpgui-container { padding: 8px 10px; }
 html[data-game-mode='true'] .rankStep[aria-current='step'] { border-image-source: url('../vendor/rpgui/img/border-image-golden.png'); background: #4c3a2e; }
 html[data-game-mode='true'] :is(.rankStepStatus,.eyebrow) { color: var(--accent-lite); }
-html[data-game-mode='true'] #selectors btn.rpgui-container { border-width: 5px; border-image-width: 7px; padding-top: 0; padding-bottom: 0; }
 html[data-game-mode='true'] .cheatsheet key.rpgui-container { border-width: 4px; border-image-width: 5px; padding: 0; color: var(--text-color); }
 html[data-game-mode='true'] sidebar .nav li span.rpgui-container { border-width: 4px; border-image-width: 5px; padding: 2px; }
 html[data-game-mode='true'] sidebar .nav li.currentLevel span.rpgui-container { border-image-source: url('../vendor/rpgui/img/border-image-golden.png'); color: var(--game-gold); }
@@ -208,17 +207,6 @@ html[data-game-mode='true'] #selectors #keymapping btn .game-mapping-state {
 html[data-game-mode='true'] #keymapping[data-value='on'] btn.rpgui-button {
     background-image: url('../vendor/rpgui/img/button-golden.png'); color: #fff1b5;
 }
-html[data-game-mode='true'] #selectors list ul {
-    border: 6px solid transparent; border-radius: 0;
-    border-image: url('../vendor/rpgui/img/border-image-grey.png') 3 repeat;
-    background: url('../vendor/rpgui/img/background-image-grey.png') center repeat;
-    padding: 4px 0; max-height: min(65dvh,430px); overflow-y: auto;
-}
-html[data-game-mode='true'] #layout list { width: max(100%,220px); }
-html[data-game-mode='true'] #keyboard list { width: max(100%,170px); }
-html[data-game-mode='true'] #selectors list li { background: transparent; color: var(--text-color); }
-html[data-game-mode='true'] #selectors list li:is(:hover,:focus-visible,[aria-selected='true']) { background: #72513c; color: #fff1bd; outline: none; }
-html[data-game-mode='true'] #selectors list li:focus-visible { box-shadow: inset 0 0 0 2px #ffe4a3; }
 #selectors btn:focus-visible { outline: 2px solid var(--accent-half); outline-offset: 2px; }
 @media (max-width: 980px) {
     html[data-game-mode='true'] #selectors btn.rpgui-button { font-size: 8px; padding: 0 18px; }
@@ -226,11 +214,8 @@ html[data-game-mode='true'] #selectors list li:focus-visible { box-shadow: inset
 @media (max-width: 600px) {
     html[data-game-mode='true'] #selectors { gap: 3px; }
     html[data-game-mode='true'] #selectors btn.rpgui-button { font-size: 7px; padding: 0 14px; gap: 4px; }
-    html[data-game-mode='true'] #layout btn > span { max-width: 86px; overflow: hidden; text-overflow: ellipsis; }
     html[data-game-mode='true'] #selectors #keymapping { margin-left: 0; }
     html[data-game-mode='true'] #selectors btn.rpgui-button > .fa { font-size: 9px; }
-    html[data-game-mode='true'] #layout list { width: max(100%,165px); }
-    html[data-game-mode='true'] #keyboard list { width: max(100%,135px); }
 }
 
 /* Leave room between header text and the sprite's decorative side edges. */
@@ -303,4 +288,22 @@ html[data-game-mode='true'] :is(input:not([type='checkbox']):not([type='radio'])
 }
 html[data-game-mode='true'] :is(:disabled,[aria-disabled='true']) {
     --game-cursor: url('../vendor/rpgui/img/cursor/default.png'), default !important;
+}
+
+/* Dropdown frames replace the two button skins; the native picker stays intact. */
+html[data-game-mode='true'] header right #selectors .headerDropdown.rpgui-container {
+    border-width: 5px; border-image-width: 6px; border-radius: 0; padding: 0 5px 0 12px; gap: 6px;
+}
+html[data-game-mode='true'] .headerDropdown label { color: #f4ead4; font: 10px/1.4 'Press Start 2P',monospace; }
+html[data-game-mode='true'] header right #selectors .headerDropdown select {
+    font: 10px/1.4 'Press Start 2P',monospace; color: #fff1bd; max-width: 200px;
+    color-scheme: dark; outline: none;
+}
+html[data-game-mode='true'] .headerDropdown select option { color: #fff1bd; background: #302b33; font-family: monospace; }
+@media (max-width: 980px) {
+    html[data-game-mode='true'] header right #selectors .headerDropdown select { font-size: 8px; }
+}
+@media (max-width: 600px) {
+    html[data-game-mode='true'] header right #selectors .headerDropdown.rpgui-container { padding-left: 7px; padding-right: 2px; gap: 0; }
+    html[data-game-mode='true'] header right #selectors .headerDropdown select { font-size: 7px; max-width: 112px; }
 }

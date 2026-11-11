@@ -135,3 +135,22 @@ header right { gap: 12px; }
     #testTimeline [role='tab'] { min-height: 28px; padding: 4px 8px; }
     #drillBanner { padding: 3px 8px; }
 }
+
+button.rankBadge { background: transparent; font-family: inherit; cursor: pointer; }
+button.rankBadge:hover { background: color-mix(in srgb,var(--accent-half) 12%,transparent); }
+button.rankBadge:focus-visible { outline: 2px solid var(--accent-half); outline-offset: 3px; }
+#rankDialog {
+    box-sizing: border-box; width: min(560px,calc(100vw - 32px)); max-height: calc(100dvh - 32px);
+    overflow: auto; padding: 20px; border: 1px solid var(--grey); border-radius: 14px;
+    background: var(--background); color: var(--text-color); font: 14px/1.5 'Radio Canada',sans-serif;
+}
+#rankDialog::backdrop { background: rgb(0 0 0 / .55); }
+#rankDialog h2 { font-size: 24px; margin: 0; }
+#rankEligibility { font-size: 12px; opacity: .8; }
+#rankList { list-style: none; padding: 0; margin: 18px 0 0; display: grid; gap: 8px; }
+.rankStep { border: 1px solid var(--grey); border-radius: 8px; padding: 10px 12px; background: var(--foreground); }
+.rankStep[aria-current='step'] { border: 2px solid var(--accent-half); background: color-mix(in srgb,var(--accent-half) 10%,var(--foreground)); }
+.rankStepHeading { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.rankStepStatus { font-size: 11px; color: var(--accent-half); }
+.rankStep p { font-size: 12px; margin: 4px 0 0; }
+@media (max-width: 480px) { #rankDialog { padding: 14px; } #rankDialog h2 { font-size: 20px; } }

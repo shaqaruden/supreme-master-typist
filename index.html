@@ -377,7 +377,7 @@
                   <div id="accuracyText"></div>
                   <div id="wpmText"></div>
                </div>
-               <div id="recordInfo"><span id="rankBadge" class="rankBadge">Unranked</span><span id="recordSummary"></span></div>
+               <div id="recordInfo"><button type="button" id="rankBadge" class="rankBadge" aria-haspopup="dialog" aria-controls="rankDialog">Unranked</button><span id="recordSummary"></span></div>
                <p id="storageNotice" role="status"></p>
             </div>
             <section id="testTimeline" aria-labelledby="timelineTitle" hidden>
@@ -423,6 +423,12 @@
          </github>
       </footer>
    </content>
+   <dialog id="rankDialog" aria-labelledby="ranksTitle">
+      <div class="progressHeader"><h2 id="ranksTitle">Your rank ladder</h2><button type="button" id="closeRanks" class="trainingButton" autofocus>Close</button></div>
+      <p id="rankPosition"></p>
+      <p id="rankEligibility">Qualifying tests last at least 30 seconds and complete at least 10 words. Each tier requires both speed and accuracy in the same test. Your highest earned rank is kept separately for each layout. Targeted drills do not award ranks.</p>
+      <ol id="rankList"></ol>
+   </dialog>
    <dialog id="progressDialog" aria-labelledby="progressTitle">
       <div class="progressHeader"><div><p class="eyebrow">Your practice, over time</p><h2 id="progressTitle">Progress</h2></div><button type="button" id="closeProgress" class="trainingButton" autofocus>Close</button></div>
       <div class="progressFilters"><label>Layout<select id="progressLayout"></select></label><label>Test settings<select id="progressGroup"></select></label></div>

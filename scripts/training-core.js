@@ -172,5 +172,6 @@
         words = [...new Set(words)];
         return {words:Array.from({length:20},(_,index) => words[index%words.length]),reason};
     }
-    root.TrainingCore = Object.freeze({comparisonKey,layoutKey,rankFor,earnedRank,personalBests,selectDrill,createStore});
+    function ranks() { return tiers.map((tier,index)=>({...tier,index})); }
+    root.TrainingCore = Object.freeze({ranks,comparisonKey,layoutKey,rankFor,earnedRank,personalBests,selectDrill,createStore});
 })(globalThis);

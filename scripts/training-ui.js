@@ -6,6 +6,7 @@ let trainingDrill = null;
 let trainingNormal = null;
 let trainingResult = null;
 let trainingOpener = null;
+let trainingRankOpener = null;
 let trainingHistory;
 try { trainingHistory = TrainingCore.createStore(localStorage); }
 catch { trainingHistory = TrainingCore.createStore({getItem(){throw Error('Storage unavailable');},setItem(){throw Error('Storage unavailable');},removeItem(){throw Error('Storage unavailable');}}); }
@@ -210,7 +211,13 @@ function trainingProgressRows() {
     const content=document.querySelector('#progressContent');content.replaceChildren();
     const selectedSettings=group!=='*' && rows.length ? rows[0].settings : {...trainingSettings(),layout:layoutValue,customFingerprint:layoutValue==='custom' ? (rows.at(-1)?.settings.customFingerprint || '') : ''};
     const rank=TrainingCore.earnedRank(sessions,selectedSettings);
-    content.append(trainingNode('h3',`${rank.name} · ${layoutValue}`),trainingNode('p',trainingRankText(rank)));
+    const rankHeading=trainingNode('h3');
+    const rankButton=trainingNode('button',rank.name,'rankBadge');
+    rankButton.type='button';rankButton.setAttribute('aria-haspopup','dialog');rankButton.setAttribute('aria-controls','rankDialog');
+    rankButton.title='View all ranks and your position';
+    rankButton.addEventListener('click',()=>trainingOpenRanks(rankButton,selectedSettings));
+    rankHeading.append(rankButton,document.createTextNode(' · '+layoutValue));
+    content.append(rankHeading,trainingNode('p',trainingRankText(rank)));
     content.append(trainingNode('p','Ranks require standard tests lasting at least 30 seconds with 10 completed words. Both speed and accuracy thresholds must be met. Targeted drills never award ranks.','muted'));
     if(!rows.length){content.append(trainingNode('h3','No completed tests for these settings yet.'),trainingNode('p','Finish a test to begin your progress history. Everything is stored in this browser.'));return;}
     content.append(trainingNode('p',`${rows.length} saved tests · Best ${Math.max(...rows.map(row=>row.wpm)).toFixed(1)} WPM · Best accuracy ${Math.max(...rows.map(row=>row.accuracy)).toFixed(1)}%${group==='*'?' · Mixed settings; choose a group for comparable results.':''}`));
@@ -223,7 +230,28 @@ function trainingOpenProgress(button) {
     if(gameON && !trainingSessionFinished)return;
     trainingOpener=button;trainingRenderProgress();document.querySelector('#progressDialog').showModal();
 }
+function trainingOpenRanks(opener, settings = trainingSessionSettings || trainingSettings()) {
+    const rank=TrainingCore.earnedRank(trainingHistory.load(),settings);
+    trainingRankOpener=opener;
+    document.querySelector('#rankPosition').textContent=`Your rank for ${settings.layout}: ${rank.name}. ${trainingRankText(rank)}`;
+    const list=document.querySelector('#rankList');list.replaceChildren();
+    const steps=[{name:'Unranked',index:-1},...TrainingCore.ranks()];
+    steps.forEach(tier=>{
+        const item=trainingNode('li',undefined,'rankStep');
+        const label=trainingNode('div',undefined,'rankStepHeading');
+        label.append(trainingNode('strong',tier.name));
+        if(tier.index===rank.index){item.setAttribute('aria-current','step');label.append(trainingNode('span','You are here','rankStepStatus'));}
+        else if(tier.index>=0&&tier.index<rank.index)label.append(trainingNode('span','Achieved','rankStepStatus'));
+        else if(tier.index>rank.index)label.append(trainingNode('span','Not yet earned','rankStepStatus'));
+        item.append(label,trainingNode('p',tier.index<0?'Complete your first qualifying test.':tier.index===0?'Complete a qualifying test at any speed and accuracy.':`${tier.wpm} WPM and ${tier.accuracy}% accuracy`));
+        list.append(item);
+    });
+    document.querySelector('#rankDialog').showModal();
+}
 function initTrainingUI() {
+    document.querySelector('#rankBadge').addEventListener('click',event=>trainingOpenRanks(event.currentTarget));
+    document.querySelector('#closeRanks').addEventListener('click',()=>document.querySelector('#rankDialog').close());
+    document.querySelector('#rankDialog').addEventListener('close',()=>trainingRankOpener?.focus());
     document.querySelector('#openProgress').addEventListener('click',e=>trainingOpenProgress(e.currentTarget));
     document.querySelector('#resultsProgress').addEventListener('click',e=>trainingOpenProgress(e.currentTarget));
     document.querySelector('#closeProgress').addEventListener('click',()=>document.querySelector('#progressDialog').close());

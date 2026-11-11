@@ -8,6 +8,8 @@ const GameMode = (() => {
     let lastCompletion=null;
     const decorated=new Map();
     const observer=new MutationObserver(()=>decorate());
+    const keyboardObserver=new MutationObserver(()=>{decorate();updateKeyboardHint();});
+    let pressedKey, keyTimer, observedInput='';
     const mappingObserver=new MutationObserver(()=>updateMappingState());
     function updateMappingState() {
         const control=document.querySelector('#keymapping');
@@ -18,7 +20,7 @@ const GameMode = (() => {
         button.querySelector('.game-mapping-state').textContent=on?'On':'Off';
     }
     const frames=[
-        ['#gameModeToggle','framed-golden-2'],['.typingArea','framed-golden'],['#testTimeline','framed'],['#progressDialog,#rankDialog,#sub card','framed-golden-2'],
+        ['.cheatsheet','framed-golden-2'],['#gameModeToggle','framed-golden-2'],['.typingArea','framed-golden'],['#testTimeline','framed'],['#progressDialog,#rankDialog,#sub card','framed-golden-2'],
         ['#drillBanner','framed-grey'],['#gameAnnouncement','framed-golden'],['.cheatsheet key,.rankStep,sidebar .nav li span','framed-grey']
     ];
     function decorate() {
@@ -38,6 +40,69 @@ const GameMode = (() => {
         observer.disconnect();decorate();
         if(enabled)document.querySelectorAll('#testTimeline,#progressContent,#rankList').forEach(node=>observer.observe(node,{childList:true,subtree:true}));
     }
+    function keyboardKey(code) {
+        if(code==='Enter')code=document.querySelector('.cheatsheet #EnterBottom')?'EnterBottom':code;
+        return [...document.querySelectorAll('.cheatsheet key')].find(key=>key.id===code);
+    }
+    function characterKey(character) {
+        const map=keyboardMap;
+        const code=Object.keys(map).find(code=>typeof map[code]==='string' && map[code]===character) ||
+            Object.keys(map.shiftLayer || {}).find(code=>map.shiftLayer[code]===character);
+        return code ? keyboardKey(code) : null;
+    }
+    function clearKeyboardFeedback() {
+        clearTimeout(keyTimer);
+        document.querySelectorAll('.cheatsheet .game-key-pressed,.cheatsheet .game-key-miss').forEach(key=>key.classList.remove('game-key-pressed','game-key-miss'));
+        pressedKey=null;
+        document.querySelector('.cheatsheet')?.removeAttribute('data-game-keyboard-error');
+    }
+    function flashKeyboardError(key) {
+        key?.classList.add('game-key-miss');
+        document.querySelector('.cheatsheet')?.setAttribute('data-game-keyboard-error','true');
+        clearTimeout(keyTimer);keyTimer=setTimeout(clearKeyboardFeedback,220);
+    }
+    function spaceKey() {
+        // Only the ANSI/ISO templates identify a spacebar by its width/position.
+        if(!document.querySelector('.cheatsheetContainer:is(.ansi,.iso)'))return null;
+        return document.querySelector('.cheatsheet row:nth-child(5) key:nth-child(4)');
+    }
+    function updateKeyboardHint() {
+        document.querySelectorAll('.cheatsheet .game-next-key').forEach(key=>key.classList.remove('game-next-key'));
+        document.querySelector('.cheatsheet')?.removeAttribute('data-game-keyboard-hint');
+        if(!document.querySelector('.cheatsheet') || !enabled || typeof correctAnswer==='undefined' || typeof trainingSessionFinished==='undefined' || trainingSessionFinished)return;
+        const value=fakeInput.innerText;
+        const sheet=document.querySelector('.cheatsheet');
+        if(value.length>observedInput.length && !correctAnswer.startsWith(value)){
+            const typed=value.slice(-1).replace('\u00a0',' ');
+            flashKeyboardError(typed===' '?spaceKey():characterKey(typed));
+        }
+        observedInput=value;
+        let key, hint;
+        if(!correctAnswer.startsWith(value)){key=keyboardKey('BackSpace');hint='Correct: Backspace';}
+        else if(value.length===correctAnswer.length){
+            key=spaceKey();hint='Next: Space / Enter';
+        }else {key=characterKey(correctAnswer[value.length]);hint='Next: '+correctAnswer[value.length];}
+        sheet.dataset.gameKeyboardHint=hint;
+        key?.classList.add('game-next-key');
+    }
+    function keyboardDown(event) {
+        if(!enabled || trainingSessionFinished || event.ctrlKey || event.metaKey || event.altKey || ['Tab','Escape'].includes(event.key))return;
+        clearKeyboardFeedback();
+        const remapping=settingsStorage.getItem('keyRemapping')==='true';
+        const character=remapping ? (event.shiftKey ? keyboardMap.shiftLayer?.[event.code] : keyboardMap[event.code]) : event.key;
+        pressedKey=event.key==='Backspace' ? keyboardKey('BackSpace') : event.key==='Shift' ? keyboardKey(event.code==='ShiftRight'?'RightShift':'LeftShift') :
+            event.key==='Enter' ? keyboardKey('Enter') : remapping ? keyboardKey(event.code) : characterKey(character);
+        if(event.key===' ')pressedKey=spaceKey();
+        pressedKey?.classList.add('game-key-pressed');
+        if((event.key===' ' || event.key==='Enter') ? fakeInput.innerText!==correctAnswer : typeof character==='string' && character.length===1 && character!==correctAnswer[fakeInput.innerText.length])flashKeyboardError(pressedKey);
+        clearTimeout(keyTimer);keyTimer=setTimeout(clearKeyboardFeedback,220);
+    }
+    function observeKeyboard() {
+        keyboardObserver.disconnect();
+        if(!enabled)document.querySelector('.cheatsheet')?.removeAttribute('data-game-keyboard-hint');
+        if(enabled)document.querySelectorAll('.cheatsheet,#fakeInput,.typingArea .prompt').forEach(node=>keyboardObserver.observe(node,{childList:true,subtree:true}));
+        updateKeyboardHint();
+    }
     function updateButton() {
         const button=document.querySelector('#gameModeToggle');
         if(!button)return;
@@ -48,6 +113,7 @@ const GameMode = (() => {
     function reset() {
         clearTimeout(feedbackTimer);clearTimeout(celebrationTimer);clearTimeout(announcementTimer);
         animation?.cancel();animation=null;
+        clearKeyboardFeedback();observedInput='';
         delete root.dataset.gameFeedback;delete root.dataset.gameCelebrating;
         const announcement=document.querySelector('#gameAnnouncement');
         if(announcement){announcement.textContent='';announcement.hidden=true;}
@@ -60,7 +126,7 @@ const GameMode = (() => {
         root.dataset.gameScene=id;
         root.style.setProperty('--game-background',`url("${new URL(scene.image,document.baseURI).href}")`);
         root.style.setProperty('--game-background-position',scene.position);
-        updateButton();observeDecorations();
+        updateButton();observeDecorations();observeKeyboard();
     }
     function setEnabled(value) {
         reset();enabled=value===true;
@@ -88,7 +154,11 @@ const GameMode = (() => {
     }
     apply();
     document.addEventListener('DOMContentLoaded',()=>{
-        updateButton();observeDecorations();updateMappingState();
+        updateButton();observeDecorations();updateMappingState();observeKeyboard();
+        input.addEventListener('keydown',keyboardDown,true);
+        input.addEventListener('keyup',()=>{pressedKey?.classList.remove('game-key-pressed');pressedKey=null;});
+        input.addEventListener('blur',clearKeyboardFeedback);
+        window.addEventListener('blur',clearKeyboardFeedback);
         mappingObserver.observe(document.querySelector('#keymapping'),{attributes:true,attributeFilter:['data-value']});
         document.querySelector('#gameModeToggle').addEventListener('click',()=>{
             const resume=gameON;

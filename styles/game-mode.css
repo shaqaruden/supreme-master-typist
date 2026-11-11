@@ -248,3 +248,44 @@ html[data-game-mode='true'] #selectors #keymapping btn.rpgui-button { padding-in
 @media (max-width: 600px) {
     html[data-game-mode='true'] #selectors #keymapping btn.rpgui-button { padding-inline: 14px; }
 }
+
+/* Stone keycaps in a gold keyboard case; keep the existing row geometry. */
+html[data-game-mode='true'] .cheatsheet.rpgui-container.framed-golden-2 {
+    border-width: 8px; border-image-width: 10px; padding: 8px;
+    max-width: 100%; box-sizing: content-box; padding-bottom: 24px;
+    background: #26222d url('../vendor/rpgui/img/background-image-grey.png') repeat;
+}
+html[data-game-mode='true'] .cheatsheet key.rpgui-container.framed-grey {
+    border-width: 3px; border-image-width: 4px; padding: 0;
+    color: #e6ddd2; filter: none; box-shadow: 0 2px 0 #100d17;
+    transition: transform 70ms steps(2,end);
+}
+html[data-game-mode='true'] .cheatsheet key.rpgui-container.framed-grey.homeRow { color: #ffd38c; }
+html[data-game-mode='true'] .cheatsheet key.rpgui-container.framed-grey.currentLevelKeys { color: #a0e1a1; }
+html[data-game-mode='true'] .cheatsheet key.rpgui-container.framed-grey.inactive { opacity: .62; }
+html[data-game-mode='true'] .cheatsheet key span { font-family: 'Press Start 2P',monospace; font-weight: 400; font-size: calc(1.5 * var(--_rem)); position: relative; z-index: 1; }
+html[data-game-mode='true'] .cheatsheet key.rpgui-container.framed-grey.game-next-key {
+    border-image-source: url('../vendor/rpgui/img/border-image-golden2.png'); border-image-slice: 8;
+    background-image: url('../vendor/rpgui/img/background-image-golden.png'); color: #fff2a8; opacity: 1;
+    box-shadow: 0 0 0 1px #ffe6a3, 0 2px 0 #100d17;
+}
+html[data-game-mode='true'] .cheatsheet key.rpgui-container.framed-grey.game-key-pressed { transform: translateY(2px); box-shadow: none; }
+html[data-game-mode='true'] .cheatsheet key.rpgui-container.framed-grey.game-key-miss {
+    background-image: none; background-color: #7c2635; color: #fff0e9; opacity: 1;
+    box-shadow: 0 0 0 2px #ff777e;
+}
+/* ISO's Enter is assembled from two rows; retain its connected silhouette. */
+html[data-game-mode='true'] .cheatsheetContainer.iso .cheatsheet row:nth-child(3) key:last-child { border-top: 0; }
+html[data-game-mode='true'] .cheatsheetContainer.iso .cheatsheet row:nth-child(3) key:last-child::before { width: calc(100% + 6px); margin-right: -3px; z-index: 0; }
+@media (prefers-reduced-motion: reduce) {
+    html[data-game-mode='true'] .cheatsheet key.rpgui-container { transition: none; transform: none; }
+}
+
+html[data-game-mode='true'] .cheatsheet::after {
+    content: attr(data-game-keyboard-hint); position: absolute; right: 8px; bottom: 5px;
+    color: #ffe4a3; font: 8px/1.2 'Press Start 2P',monospace; pointer-events: none;
+}
+html[data-game-mode='true'] .cheatsheet[data-game-keyboard-error='true']::after { color: #ff9898; }
+@media (prefers-reduced-motion: reduce) {
+    html[data-game-mode='true'] .cheatsheet key.rpgui-container.framed-grey.game-key-pressed { transform: none; }
+}

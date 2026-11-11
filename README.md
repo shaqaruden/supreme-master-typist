@@ -42,6 +42,12 @@ The existing VS Code workflow uses [Live Sass Compiler](https://marketplace.visu
 
 Please open an issue before submitting a pull request.
 
+## Game Mode
+
+Use the **Game Mode** button beside the theme controls to switch to a medieval RPG-inspired interface. It uses [RPGUI](https://github.com/RonenNess/RPGUI)'s actual frame and button sprites over the courtyard pixel-art background, with a local pixel font and brief typing/completion feedback. The toggle is remembered; turning it off restores your normal theme without resetting a test. Reduced-motion preferences are respected.
+
+The initial release includes the courtyard background. Additional scenes can be added to the small registry in `scripts/game-mode.js` later; no empty background picker is shown.
+
 ## Upstream credit
 
 Supreme Master Typist is a fork of [Colemak Camp](https://github.com/ColemakCamp/colemakcamp.github.io), which is a fork of [Colemak Club](https://github.com/gnusenpai/colemakclub), which itself is a fork of [Colemak Academy](https://colemak.academy/).
@@ -52,6 +58,8 @@ This project is under the **[GNU Affero General Public License v3.0 (AGPL-3.0)](
 Parts of the project that are not a part of this license are mentioned in this table:
 | Project Name                                                                            | Project License   |
 |-----------------------------------------------------------------------------------------|-------------------|
+| [RPGUI](https://github.com/RonenNess/RPGUI) | zlib (see vendor/rpgui/LICENSE.txt) |
+| [Press Start 2P](https://fonts.google.com/specimen/Press+Start+2P) | Open Font License (see fonts/press-start-2p-OFL.txt) |
 | [Popper](https://popper.js.org/)                                                        | MIT               |
 | [Tippy.js](https://atomiks.github.io/tippyjs/)                                          | MIT               |
 | [Fork Awesome CSS](https://github.com/ForkAwesome/Fork-Awesome)                         | MIT               |

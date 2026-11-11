@@ -1,0 +1,40 @@
+const {chromium}=require('playwright');const assert=require('node:assert/strict');
+(async()=>{const browser=await chromium.launch({executablePath:'/usr/bin/chromium',args:['--no-sandbox']});try{
+ const p=await browser.newPage({viewport:{width:1280,height:900}});const errors=[];p.on('pageerror',e=>errors.push(e.message));await p.goto('http://127.0.0.1:4173');
+ assert.equal(await p.locator('#gameModeToggle').count(),1,'Game Mode toggle exists');
+ await p.evaluate(()=>{forceDay();settingsStorage.setItem('smt.gameMode','false');});await p.reload();
+ const toggle=p.getByRole('button',{name:'Game Mode',exact:true});assert.equal(await toggle.getAttribute('aria-pressed'),'false');
+ await toggle.focus();await p.keyboard.press('Enter');assert.equal(await toggle.getAttribute('aria-pressed'),'true');
+ assert.equal(await p.locator('.typingArea').evaluate(e=>e.classList.contains('rpgui-container')),true,'uses actual RPGUI frame classes');
+ assert.ok(await p.locator('.typingArea').evaluate(e=>getComputedStyle(e).borderImageSource.includes('/vendor/rpgui/img/')),'uses vendored RPGUI frame sprites');
+ assert.ok(await p.evaluate(()=>getComputedStyle(document.body,'::before').backgroundImage.includes('game-courtyard.webp')));
+ await p.reload();assert.equal(await toggle.getAttribute('aria-pressed'),'true','preference survives reload');assert.equal(await p.evaluate(()=>settingsStorage.getItem('theme')),'day');
+ await p.locator('#userInput').focus();await p.keyboard.type('x');
+ const before=await p.evaluate(()=>({startedAt:trainingStartedAt,settings:JSON.stringify(trainingSessionSettings),word:correctAnswer,typed:fakeInput.innerText}));
+ await toggle.click();assert.equal(await toggle.getAttribute('aria-pressed'),'false');
+ assert.equal(await p.locator('.typingArea').evaluate(e=>e.classList.contains('rpgui-container')),false,'normal mode removes RPGUI styling');
+ assert.deepEqual(await p.evaluate(()=>({startedAt:trainingStartedAt,settings:JSON.stringify(trainingSessionSettings),word:correctAnswer,typed:fakeInput.innerText})),before,'toggle preserves active test');
+ assert.equal(await p.evaluate(()=>settingsStorage.getItem('theme')),'day');
+ await toggle.click();await p.evaluate(()=>endGame());assert.equal(await p.locator('#resetButton').isVisible(),true);assert.match(await p.locator('#gameAnnouncement').innerText(),/complete/i);
+ await p.getByRole('tab',{name:'Mistakes',exact:true}).click();await p.getByRole('tab',{name:'Heatmap',exact:true}).click();
+ await p.locator('.heatKey:not(:disabled)').first().focus();await p.keyboard.press('Tab');
+ assert.ok(await p.evaluate(()=>document.activeElement.matches('.heatKey')&&getComputedStyle(document.activeElement).outlineStyle!=='none'),'heatmap keyboard focus stays visible');
+ await p.getByRole('tab',{name:'Timeline',exact:true}).click();
+ await p.locator('#rankBadge').click();assert.equal(await p.locator('#rankDialog').isVisible(),true);
+ assert.ok(await p.locator('#rankDialog').evaluate(e=>getComputedStyle(e).borderImageSource.includes('/vendor/rpgui/img/')),'rank dialog uses RPGUI frame');await p.keyboard.press('Escape');
+ await p.locator('#openProgress').click();assert.equal(await p.locator('#progressDialog').isVisible(),true);
+ assert.ok(await p.locator('#progressDialog').evaluate(e=>getComputedStyle(e).borderImageSource.includes('/vendor/rpgui/img/')),'Progress uses RPGUI frame');
+ await p.locator('#progressLayout').focus();await p.keyboard.press('ArrowDown');
+ assert.ok(await p.locator('#progressLayout').evaluate(e=>getComputedStyle(e).outlineStyle!=='none'),'native dropdown focus stays visible');await p.keyboard.press('Escape');
+ await p.reload();await p.emulateMedia({reducedMotion:'reduce'});await p.locator('#userInput').focus();await p.keyboard.type('a');
+ assert.equal(await p.evaluate(()=>document.getAnimations().filter(a=>a.playState==='running'&&a.effect?.target?.closest?.('main')).length),0,'reduced motion disables game effects');
+ for(const viewport of [{width:390,height:844},{width:844,height:390}]){
+  await p.setViewportSize(viewport);await p.evaluate(()=>endGame());
+  await p.waitForFunction(()=>{const r=document.querySelector('#resetButton').getBoundingClientRect();return r.top>=0&&r.right<=innerWidth&&r.bottom<=innerHeight;});
+  const r=await toggle.boundingBox();assert.ok(r&&r.x>=0&&r.y>=0&&r.x+r.width<=viewport.width&&r.y+r.height<=viewport.height,'toggle remains visible');
+  await p.locator('#resetButton').click();await p.locator('#userInput').focus();await p.keyboard.type('a');
+ }
+ assert.deepEqual(errors,[]);await p.close();
+ const blocked=await browser.newPage();await blocked.addInitScript(()=>Object.defineProperty(window,'localStorage',{get(){throw new DOMException('Blocked','SecurityError');}}));await blocked.goto('http://127.0.0.1:4173');await blocked.locator('#gameModeToggle').click();assert.equal(await blocked.locator('#gameModeToggle').getAttribute('aria-pressed'),'true');await blocked.close();
+ console.log('PASS: Game Mode persistence, keyboard toggle, active-test preservation, theme restoration, scene, dialogs/tabs, reduced motion, mobile/landscape and blocked storage');
+}finally{await browser.close();}})().catch(e=>{console.error(e);process.exit(1)});

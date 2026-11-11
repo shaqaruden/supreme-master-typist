@@ -1,0 +1,11 @@
+# Medieval Game Mode
+
+Approved in chat: a visual-only alternate UI using the selected compact medieval pixel-art courtyard, vibrant colours, RPGUI-styled panels and controls, pixel-art corners and restrained animations. A persistent Game Mode button beside the theme controls toggles it and remembers the preference. Ordinary typing, scoring, drills, ranks and history retain their behaviour. More backgrounds may be added later, but only the courtyard is selectable in this release.
+
+Use the approved generated courtyard as a local optimized WebP asset. Keep the scene visible around the UI and use RPGUI's textured medieval frames and sprite buttons, with readable light text. Warm gold/green feedback and a locally hosted Press Start 2P font provide the game character. Normal mode restores the existing selected light/dark/custom appearance without overwriting those preferences.
+
+The user's later explicit choice of https://github.com/RonenNess/RPGUI supersedes the initial Pixel Corners treatment. Vendor the pinned upstream container/button CSS and referenced graphics locally with its zlib license and credits. Preserve original component declarations and sprites, and keep integration sizing/position/focus overrides separate. Add/remove actual RPGUI classes only in Game Mode. Do not load global content resets or JS widget enhancement; native typing inputs, dropdowns and keyboard semantics remain intact. Avoid clipping focus indicators, scrolling charts or native dialogs.
+
+Animation is event-driven and brief: subtle hit/error feedback, a completed-word accent and a short results reveal/celebration. No continuous background movement, screen shake, extra sounds, gameplay mechanics, XP changes or rapid flashing. Respect prefers-reduced-motion. Remove effect classes/timers on mode disable/reset. Artwork alone should convey the setting.
+
+Load the mode preference early to avoid a theme flash, and tolerate unavailable storage via the existing preference adapter. Default off. Keep a small scene registry with one courtyard entry and a safe default for future extension; do not add an empty background selector. Give the toggle an accessible name, aria-pressed and a visible on/off state. Keep controls reachable on phones and short landscape screens, including stats, Reset/Try again and modal Close buttons.

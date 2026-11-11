@@ -46,10 +46,13 @@
    <meta name="twitter:card" content="summary_large_image">
 
    <script type="text/javascript" src="scripts/settings-storage.min.js"></script>
+   <script type="text/javascript" src="scripts/game-mode.min.js"></script>
    <script type="text/javascript" src="scripts/theme-stuff-re.min.js"></script>
    <link rel="stylesheet" href="styles/test-timeline.css">
    <link rel="stylesheet" href="styles/brand.css">
    <link rel="stylesheet" href="styles/training.css">
+   <link rel="stylesheet" href="vendor/rpgui/rpgui.css">
+   <link rel="stylesheet" href="styles/game-mode.css">
 </head>
 <body>
    <curtain class="dispose" id="sub">
@@ -198,6 +201,12 @@
             </li>
          </ul>
          <ul class="config">
+            <li class="game-mode-setting">
+               <button type="button" id="gameModeToggle" aria-label="Game Mode" aria-pressed="false">
+                  <svg viewBox="0 0 24 16" aria-hidden="true"><path fill="currentColor" d="M5 0h14v2h3v3h2v9h-2v2h-5v-2h-2v-2H9v2H7v2H2v-2H0V5h2V2h3z"/><path fill="var(--background)" d="M5 4h2v2h2v2H7v2H5V8H3V6h2zm11 0h2v2h-2zm3 3h2v2h-2z"/></svg>
+                  <span class="game-toggle-label">Game Mode</span><span class="game-toggle-state">Off</span>
+               </button>
+            </li>
             <li class="theme auto" data-tippy-content="Toggle Theme" data-tippy-placement="right">
                <span class="theme-auto">
                   <i class="fa fa-auto"></i>
@@ -423,6 +432,7 @@
          </github>
       </footer>
    </content>
+   <div id="gameAnnouncement" role="status" aria-live="polite" hidden></div>
    <dialog id="rankDialog" aria-labelledby="ranksTitle">
       <div class="progressHeader"><h2 id="ranksTitle">Your rank ladder</h2><button type="button" id="closeRanks" class="trainingButton" autofocus>Close</button></div>
       <p id="rankPosition"></p>

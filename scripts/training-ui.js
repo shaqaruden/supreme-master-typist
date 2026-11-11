@@ -29,6 +29,7 @@ function trainingSettings() {
     };
 }
 function trainingReset() {
+    GameMode.reset();
     trainingSessionFinished = false;
     trainingStartedAt = null;
     trainingSessionSettings = null;
@@ -54,6 +55,7 @@ function trainingStarted() {
         trainingSessionSettings = trainingSettings();
     }
     gameON = true;
+    GameMode.feedback(fakeInput.innerText === correctAnswer ? 'word' : fakeInput.innerText === correctAnswer.slice(0,fakeInput.innerText.length) ? 'hit' : 'miss');
     const progress = document.querySelector('#openProgress');
     progress.disabled = true;
     progress.title = 'Finish or reset this test to view Progress';
@@ -154,6 +156,7 @@ function trainingRankText(rank) {
 }
 function trainingComplete(result) {
     trainingResult = result;
+    GameMode.complete(result);
     const settings=trainingSessionSettings || trainingSettings();
     const session={...result,settings,date:new Date().toISOString(),mistakes:result.attempts-result.correctAttempts};
     const previous=trainingHistory.load();

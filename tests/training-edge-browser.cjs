@@ -13,7 +13,7 @@ const {chromium}=require('playwright');const assert=require('node:assert/strict'
  await p.locator('#exitDrill').click();assert.equal(await p.evaluate(()=>timeLimitMode),true);assert.equal(await p.evaluate(()=>localStorage.getItem('timeMax')),'1');
  const countBefore=await p.evaluate(()=>trainingHistory.load().length);await p.evaluate(()=>{reset();testTimeline.input('','a',correctAnswer);endGame();endGame();});
  assert.equal(await p.evaluate(()=>trainingHistory.load().length),countBefore+1,'finish saves only once');
- const rank=await p.evaluate(()=>{const s={id:'qualified',date:new Date().toISOString(),settings:trainingSettings(),duration:30000,words:30,attempts:200,correctAttempts:196,wpm:120,accuracy:98};s.settings.drill=false;trainingHistory.save(s);return TrainingCore.earnedRank(trainingHistory.load(),s.settings);});assert.equal(rank.name,'Supreme Master');
+ const rank=await p.evaluate(()=>{const s={id:'qualified',date:new Date().toISOString(),settings:trainingSettings(),duration:30000,words:30,attempts:200,correctAttempts:196,wpm:120,accuracy:98};s.settings.drill=false;s.settings.level=7;trainingHistory.save(s);return TrainingCore.earnedRank(trainingHistory.load(),s.settings);});assert.equal(rank.name,'Supreme Master');
  await p.evaluate(()=>{reset();switchLevel(2);correctAnswer='had';testTimeline.input('','x','had');endGame();});
  await p.locator('#practiceMistakes').click();
  assert.ok(await p.evaluate(()=>trainingDrill.words.every(word=>wordLists['lvl2'].includes(word))), 'level-2 drills include previously learned letters and use real dictionary words');

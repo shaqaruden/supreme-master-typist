@@ -38,18 +38,18 @@ test('rank eligibility enforces time, completed words and regular tests at exact
         assert.equal(rank.next.name,'Apprentice');
     }
     assert.equal(c.rankFor(session({wpm:0,accuracy:0})).name,'Apprentice');
-    assert.equal(c.rankFor(session({wpm:120,accuracy:98})).next,null);
+    assert.equal(c.rankFor(session({wpm:120,accuracy:98,settings:{...normal,level:7}})).next,null);
 });
 
 test('rank tiers require both speed and accuracy without rounding a near miss upward', () => {
     const c = core();
     for (const [wpm,accuracy,name,previous] of [[30,90,'Typist','Apprentice'],[50,93,'Adept','Typist'],[70,95,'Expert','Adept'],[90,97,'Master','Expert'],[120,98,'Supreme Master','Master']]) {
-        const rank = c.rankFor(session({wpm,accuracy}));
+        const rank = c.rankFor(session({wpm,accuracy,settings:{...normal,level:7}}));
         assert.equal(rank.name,name);
         assert.equal(rank.wpm,wpm);
         assert.equal(rank.accuracy,accuracy);
-        assert.equal(c.rankFor(session({wpm:wpm-0.001,accuracy})).name,previous);
-        assert.equal(c.rankFor(session({wpm,accuracy:accuracy-0.001})).name,previous);
+        assert.equal(c.rankFor(session({wpm:wpm-0.001,accuracy,settings:{...normal,level:7}})).name,previous);
+        assert.equal(c.rankFor(session({wpm,accuracy:accuracy-0.001,settings:{...normal,level:7}})).name,previous);
     }
     assert.equal(c.rankFor(session({wpm:NaN,accuracy:Infinity})).name,'Apprentice');
 });
@@ -57,7 +57,9 @@ test('rank tiers require both speed and accuracy without rounding a near miss up
 test('earned rank preserves highest tier only within the current layout identity', () => {
     const c = core();
     const saved = [session({id:'a',wpm:90,accuracy:97,settings:{...normal,level:1}}),session({id:'b',wpm:130,accuracy:100,settings:{...normal,layout:'dvorak'}}),session({id:'c',wpm:140,accuracy:100,settings:{...normal,drill:true}}),session({id:'d',wpm:150,accuracy:100,settings:{...normal,customFingerprint:'other'}})];
-    assert.equal(c.earnedRank(saved,normal).name,'Master');
+    assert.equal(c.earnedRank(saved,normal).name,'Apprentice');
+    saved.push(session({id:'advanced',wpm:90,accuracy:97,settings:{...normal,level:5}}));
+    assert.equal(c.earnedRank(saved,{...normal,level:1}).name,'Master');
     assert.equal(c.earnedRank([],normal).name,'Unranked');
     assert.equal(c.earnedRank(saved,{...normal,level:8}).next.name,'Supreme Master');
 });
@@ -207,4 +209,16 @@ test('invalid completions leave history intact and stored counts remain finite a
     assert.equal(saved.correctAttempts,2);
     assert.equal(saved.mistakes,0);
     assert.equal(saved.accuracy,100);
+});
+
+// Difficulty is assessed on each test; the earned rank remains unified per layout.
+test('rank tiers require the approved minimum learning level in the same qualifying test', () => {
+    const c=core();
+    for(const [level,name] of [[1,'Apprentice'],[2,'Typist'],[3,'Adept'],[4,'Expert'],[5,'Master'],[6,'Master'],[7,'Supreme Master'],[8,'Supreme Master'],['sentences','Supreme Master']]) {
+        assert.equal(c.rankFor(session({wpm:200,accuracy:100,settings:{...normal,layout:'dvorak',level}})).name,name,String(level));
+    }
+    const saved=[session({id:'fast',wpm:200,accuracy:100,settings:{...normal,level:1}}),session({id:'harder',wpm:29,accuracy:100,settings:{...normal,level:3}})];
+    assert.equal(c.earnedRank(saved,normal).name,'Apprentice','does not combine speed from an easy test with level from a slower test');
+    saved.push(session({id:'earned',wpm:55,accuracy:94,settings:{...normal,level:3}}));
+    assert.equal(c.earnedRank(saved,{...normal,level:1}).name,'Adept','one earned rank survives switching back to an earlier level');
 });

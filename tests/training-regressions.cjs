@@ -9,8 +9,8 @@ await run('timed drill shows word counter immediately',async p=>{
 await run('Progress rank uses selected historical identity and clears custom fingerprint for standard layouts',async p=>{
  await p.evaluate(()=>{
   const result={id:'custom-old',date:new Date().toISOString(),duration:30000,words:20,attempts:100,correctAttempts:98,wpm:120,accuracy:98};
-  trainingHistory.save({...result,settings:{...trainingSettings(),layout:'custom',customFingerprint:'old-custom'}});
-  trainingHistory.save({...result,id:'colemak-qualified',settings:{...trainingSettings(),layout:'colemak',customFingerprint:''}});
+  trainingHistory.save({...result,settings:{...trainingSettings(),layout:'custom',level:7,customFingerprint:'old-custom'}});
+  trainingHistory.save({...result,id:'colemak-qualified',settings:{...trainingSettings(),layout:'colemak',level:7,customFingerprint:''}});
  });
  await p.locator('#openProgress').click();await p.locator('#progressLayout').selectOption('custom');
  const key=await p.locator('#progressGroup option').evaluateAll(options=>options.find(o=>o.value.includes('old-custom')).value);await p.locator('#progressGroup').selectOption(key);

@@ -147,9 +147,10 @@ function trainingRenderHeatmap(result) {
     panel.append(keyboard,detail,trainingNode('h3','All attempted characters'));
     panel.append(trainingTable(['Character','Attempts','Mistakes','Error rate'],result.letters.map(item=>[trainingCharacter(item.character),item.attempts,item.errors,(100*item.errors/item.attempts).toFixed(1)+'%'])));
 }
+function trainingRankLevel(tier) { return tier.minLevel >= 7 ? 'All Words or Full Sentences' : `Level ${tier.minLevel} or above`; }
 function trainingRankText(rank) {
     const next=rank.next;
-    return next ? `Next: ${next.name} · ${next.wpm} WPM and ${next.accuracy}% accuracy` : 'Highest tier achieved.';
+    return next ? `Next: ${next.name} · ${trainingRankLevel(next)}${next.index===0?' · Complete a qualifying test':` · ${next.wpm} WPM and ${next.accuracy}% accuracy`}` : 'Highest tier achieved.';
 }
 function trainingComplete(result) {
     trainingResult = result;
@@ -243,7 +244,7 @@ function trainingOpenRanks(opener, settings = trainingSessionSettings || trainin
         if(tier.index===rank.index){item.setAttribute('aria-current','step');label.append(trainingNode('span','You are here','rankStepStatus'));}
         else if(tier.index>=0&&tier.index<rank.index)label.append(trainingNode('span','Achieved','rankStepStatus'));
         else if(tier.index>rank.index)label.append(trainingNode('span','Not yet earned','rankStepStatus'));
-        item.append(label,trainingNode('p',tier.index<0?'Complete your first qualifying test.':tier.index===0?'Complete a qualifying test at any speed and accuracy.':`${tier.wpm} WPM and ${tier.accuracy}% accuracy`));
+        item.append(label,trainingNode('p',tier.index<0?'Complete your first qualifying test.':tier.index===0?`${trainingRankLevel(tier)} · Complete a qualifying test at any speed and accuracy.`:`${trainingRankLevel(tier)} · ${tier.wpm} WPM and ${tier.accuracy}% accuracy`));
         list.append(item);
     });
     document.querySelector('#rankDialog').showModal();

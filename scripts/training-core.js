@@ -3,12 +3,12 @@
     'use strict';
     const HISTORY_KEY = 'smt.history.v1';
     const tiers = [
-        {name:'Apprentice', wpm:0, accuracy:0},
-        {name:'Typist', wpm:30, accuracy:90},
-        {name:'Adept', wpm:50, accuracy:93},
-        {name:'Expert', wpm:70, accuracy:95},
-        {name:'Master', wpm:90, accuracy:97},
-        {name:'Supreme Master', wpm:120, accuracy:98}
+        {name:'Apprentice', wpm:0, accuracy:0, minLevel:1},
+        {name:'Typist', wpm:30, accuracy:90, minLevel:2},
+        {name:'Adept', wpm:50, accuracy:93, minLevel:3},
+        {name:'Expert', wpm:70, accuracy:95, minLevel:4},
+        {name:'Master', wpm:90, accuracy:97, minLevel:5},
+        {name:'Supreme Master', wpm:120, accuracy:98, minLevel:7}
     ];
     const number = value => typeof value === 'number' && Number.isFinite(value) ? Math.max(0, value) : 0;
     const text = value => typeof value === 'string' ? value : '';
@@ -40,10 +40,12 @@
         };
     }
     function rankFor(session = {}) {
+        const level=(session.settings || {}).level === 'sentences' ? 8 : Number((session.settings || {}).level);
+        if (!Number.isInteger(level) || level < 1 || level > 8) return rank(-1);
         if (number(session.duration) < 30000 || number(session.words) < 10 || (session.settings || {}).drill) return rank(-1);
         let index = 0;
         tiers.forEach((tier, i) => {
-            if (number(session.wpm) >= tier.wpm && number(session.accuracy) >= tier.accuracy) index = i;
+            if (level >= tier.minLevel && number(session.wpm) >= tier.wpm && number(session.accuracy) >= tier.accuracy) index = i;
         });
         return rank(index);
     }

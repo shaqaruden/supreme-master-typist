@@ -1,12 +1,12 @@
-# Dvokak Dubs
+# Dvorak Dubs
 A keyboard practice app for Dvorak, Colemak, and other layouts, with typing stats and a timeline showing exactly where mistakes happen.
 
-Try [Dvokak Dubs](https://shaqaruden.github.io/dvokakdubs/), hosted with GitHub Pages.
+Try [Dvorak Dubs](https://shaqaruden.github.io/dvokakdubs/), hosted with GitHub Pages.
 
-Dvokak Dubs is a fork of [Colemak Camp](https://github.com/ColemakCamp/colemakcamp.github.io), which is a fork of [Colemak Club](https://github.com/gnusenpai/colemakclub), which itself is a fork of [Colemak Academy](https://colemak.academy/).
+Dvorak Dubs is a fork of [Colemak Camp](https://github.com/ColemakCamp/colemakcamp.github.io), which is a fork of [Colemak Club](https://github.com/gnusenpai/colemakclub), which itself is a fork of [Colemak Academy](https://colemak.academy/).
 
 ## Key Features
-Dvokak Dubs adds:
+Dvorak Dubs adds:
 - A current-test event timeline showing completed words and mistakes in red.
 - Selectable events with timestamps and expected versus typed characters.
 - A results layout that keeps typing stats and Reset visible.

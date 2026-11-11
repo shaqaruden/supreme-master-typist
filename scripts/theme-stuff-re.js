@@ -1,9 +1,9 @@
 function setJSON(key, data) {
     if (typeof data != "string") {data = JSON.stringify(data);}
-    localStorage.setItem(key, data);
+    settingsStorage.setItem(key, data);
 }
 function getJSON(key) {
-    return JSON.parse(localStorage.getItem(key));
+    return JSON.parse(settingsStorage.getItem(key));
 }
 
 const dayCSS = document.getElementById('dayCSS'),
@@ -189,7 +189,7 @@ function updateStyles() {
 updateStyles();
 
 function forceAuto(key) {
-    localStorage.setItem('theme','auto');
+    settingsStorage.setItem('theme','auto');
     dayCSS.setAttribute('media','(prefers-color-scheme: light)');
     dayCSS.setAttribute('type','text/css');
     nightCSS.setAttribute('media','(prefers-color-scheme: no-preference), (prefers-color-scheme: dark)');
@@ -199,7 +199,7 @@ function forceAuto(key) {
     }
 }
 function forceDay(key) {
-    localStorage.setItem('theme','day');
+    settingsStorage.setItem('theme','day');
     dayCSS.removeAttribute('media');
     dayCSS.setAttribute('type','text/css');
     nightCSS.removeAttribute('media');
@@ -209,7 +209,7 @@ function forceDay(key) {
     }
 }
 function forceNight(key) {
-    localStorage.setItem('theme','night');
+    settingsStorage.setItem('theme','night');
     dayCSS.removeAttribute('media');
     dayCSS.setAttribute('type','null');
     nightCSS.removeAttribute('media');
@@ -225,9 +225,9 @@ function themeClick(key) {
     } else {
         key = '';
     }
-    if (localStorage.theme === 'night') {
+    if (settingsStorage.theme === 'night') {
         forceNight(key);
-    } else if (localStorage.theme === 'day') {
+    } else if (settingsStorage.theme === 'day') {
         forceDay(key);
     } else {
         forceAuto(key);
@@ -235,24 +235,24 @@ function themeClick(key) {
 }
 
 function setAppearance(key) {
-    if (!localStorage.daymode) {
-        localStorage.daymode = 'default';
+    if (!settingsStorage.daymode) {
+        settingsStorage.daymode = 'default';
     }
-    if (!localStorage.nightmode) {
-        localStorage.nightmode = 'default';
+    if (!settingsStorage.nightmode) {
+        settingsStorage.nightmode = 'default';
     }
-    if (!localStorage.daytone) {
-        localStorage.daytone = 'default';
+    if (!settingsStorage.daytone) {
+        settingsStorage.daytone = 'default';
     }
-    if (!localStorage.nighttone) {
-        localStorage.nighttone = 'default';
+    if (!settingsStorage.nighttone) {
+        settingsStorage.nighttone = 'default';
     }
 
     let dde = document.documentElement;
-    dde.setAttribute('theme-light',localStorage.daymode);
-    dde.setAttribute('theme-dark',localStorage.nightmode);
-    dde.setAttribute('accent-light',localStorage.daytone);
-    dde.setAttribute('accent-dark',localStorage.nighttone);
+    dde.setAttribute('theme-light',settingsStorage.daymode);
+    dde.setAttribute('theme-dark',settingsStorage.nightmode);
+    dde.setAttribute('accent-light',settingsStorage.daytone);
+    dde.setAttribute('accent-dark',settingsStorage.nighttone);
 
     if (key && key !== '') {
         let objs = document.querySelectorAll('.appearance li[class*="active"]');
@@ -266,13 +266,13 @@ function setAppearance(key) {
     
             obj.classList.add(`active-${val}`);
         }
-        setActivity('theme', localStorage.daymode, 'day');
-        setActivity('theme', localStorage.nightmode, 'night');
-        if (localStorage.daymode !== 'custom') {
-            setActivity('accent', localStorage.daytone, 'day');
+        setActivity('theme', settingsStorage.daymode, 'day');
+        setActivity('theme', settingsStorage.nightmode, 'night');
+        if (settingsStorage.daymode !== 'custom') {
+            setActivity('accent', settingsStorage.daytone, 'day');
         }
-        if (localStorage.nightmode !== 'custom') {
-            setActivity('accent', localStorage.nighttone, 'night');
+        if (settingsStorage.nightmode !== 'custom') {
+            setActivity('accent', settingsStorage.nighttone, 'night');
         }
     }
 }
@@ -283,12 +283,12 @@ document.addEventListener('click', function(event) {
         themeBTN = document.querySelector('ul.config li.theme');
     
     if (target == themeBTN || themeBTN.contains(target)) {
-        if (localStorage.theme === 'night') {
-            localStorage.theme = 'auto';
-        } else if (localStorage.theme === 'day') {
-            localStorage.theme = 'night';
+        if (settingsStorage.theme === 'night') {
+            settingsStorage.theme = 'auto';
+        } else if (settingsStorage.theme === 'day') {
+            settingsStorage.theme = 'night';
         } else {
-            localStorage.theme = 'day';
+            settingsStorage.theme = 'day';
         }
 
         themeClick(themeBTN);
@@ -312,44 +312,44 @@ document.addEventListener('click', function(event) {
     if (target.tagName.match(/li/i)) {
         console.log('activate both');
         if (taccent(target) !== null) {
-            localStorage.daytone = taccent(target);
-            localStorage.nighttone = taccent(target);
+            settingsStorage.daytone = taccent(target);
+            settingsStorage.nighttone = taccent(target);
         }
         if (ttheme(target) !== null) {
-            localStorage.daymode = ttheme(target);
-            localStorage.nightmode = ttheme(target);
+            settingsStorage.daymode = ttheme(target);
+            settingsStorage.nightmode = ttheme(target);
         }
     }
 
     if (target.classList.contains('fa-dot') || target.tagName.match(/span/i)) {
         console.log('activate both');
         if (taccent(target.parentNode) !== null) {
-            localStorage.daytone = taccent(target.parentNode);
-            localStorage.nighttone = taccent(target.parentNode);
+            settingsStorage.daytone = taccent(target.parentNode);
+            settingsStorage.nighttone = taccent(target.parentNode);
         }
         if (ttheme(target.parentNode) !== null) {
-            localStorage.daymode = ttheme(target.parentNode);
-            localStorage.nightmode = ttheme(target.parentNode);
+            settingsStorage.daymode = ttheme(target.parentNode);
+            settingsStorage.nightmode = ttheme(target.parentNode);
         }
     }
 
     if (target.classList.contains('fa-day')) {
         console.log('activate day');
         if (taccent(target.parentNode) !== null) {
-            localStorage.daytone = taccent(target.parentNode);
+            settingsStorage.daytone = taccent(target.parentNode);
         }
         if (ttheme(target.parentNode) !== null) {
-            localStorage.daymode = ttheme(target.parentNode);
+            settingsStorage.daymode = ttheme(target.parentNode);
         }
     }
 
     if (target.classList.contains('fa-night')) {
         console.log('activate night');
         if (taccent(target.parentNode) !== null) {
-            localStorage.nighttone = taccent(target.parentNode);
+            settingsStorage.nighttone = taccent(target.parentNode);
         }
         if (ttheme(target.parentNode) !== null) {
-            localStorage.nightmode = ttheme(target.parentNode);
+            settingsStorage.nightmode = ttheme(target.parentNode);
         }
     }
 

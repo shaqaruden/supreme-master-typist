@@ -1,15 +1,68 @@
+/* Supreme Master Typist identity. Theme colours remain user-configurable. */
+header left {
+    gap: 1rem;
+    min-width: 0;
+    flex-shrink: 0;
+}
+
+.brand-mark {
+    display: block;
+    flex: 0 0 auto;
+    width: 4.2rem;
+    height: 4.2rem;
+}
+
 header left .brand-wordmark {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.1rem;
+    width: auto;
     height: auto;
     color: var(--text-color);
     font-family: 'Radio Canada', sans-serif;
-    font-size: 2.4rem;
+    font-size: 2rem;
     font-weight: 700;
-    line-height: 1.2;
+    line-height: 1.05;
     white-space: nowrap;
 }
+
+.brand-wordmark-top {
+    font-size: 1rem;
+    font-weight: 400;
+    letter-spacing: 0.16em;
+    line-height: 1.4;
+    text-transform: uppercase;
+}
+
+.brand-wordmark-bottom {
+    font-size: 2.5rem;
+    font-weight: 700;
+    letter-spacing: -0.055em;
+    line-height: 1;
+}
+
 header left:hover .brand-wordmark { color: var(--text-stark); }
 
-/* The longer wordmark yields space to keyboard controls on smaller screens. */
+footer .brand-mark {
+    width: 2rem;
+    height: 2rem;
+}
+
+footer about a:first-child span {
+    font-weight: 700;
+    letter-spacing: -0.025em;
+}
+
+/* Keep the recognisable SMT mark when the layout controls need the space. */
 @media (max-width: 900px) {
     header left .brand-wordmark { display: none; }
+    header left .brand-mark { width: 3.8rem; height: 3.8rem; }
+}
+
+@media (max-width: 480px) {
+    footer { font-size: 1.1rem; }
+    footer about, footer about a, footer github { gap: 0.45rem; }
+    footer about a:first-child span { max-width: 10rem; line-height: 1.1; }
+    footer .brand-mark { width: 1.8rem; height: 1.8rem; }
 }

@@ -1,20 +1,16 @@
 {
     "name": "Supreme Master Typist",
     "short_name": "Supreme Master Typist",
-    "description": "Practice Dvorak, Colemak, and other keyboard layouts with timed tests and a mistake timeline.",
+    "description": "Practise keyboard layouts with targeted mistake drills, local progress and skill-based ranks.",
+    "id": "/supreme-master-typist/",
+    "start_url": "/supreme-master-typist/",
+    "scope": "/supreme-master-typist/",
     "icons": [
-        {
-            "src": "192.png",
-            "sizes": "192x192",
-            "type": "image/png"
-        },
-        {
-            "src": "512.png",
-            "sizes": "512x512",
-            "type": "image/png"
-        }
+        { "src": "192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+        { "src": "512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+        { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any" }
     ],
     "theme_color": "#7398d9",
-    "background_color": "#0c1016",
+    "background_color": "#151d2b",
     "display": "standalone"
 }

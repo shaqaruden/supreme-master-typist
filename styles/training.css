@@ -1,0 +1,137 @@
+/* Training surfaces use the user's light/dark theme, including custom colours. */
+#resultActions[hidden], #drillBanner[hidden], #testTimeline [hidden] { display: none !important; }
+.trainingButton, #testTimeline [role='tab'], #resetButton {
+    border: 1px solid var(--grey);
+    border-radius: 8px;
+    background: var(--foreground);
+    color: var(--text-color);
+    font: inherit;
+    cursor: pointer;
+}
+.trainingButton { min-height: 36px; padding: 7px 12px; font-size: 14px; white-space: nowrap; }
+.trainingButton.primary { background: var(--accent-half); color: var(--background); border-color: var(--accent-half); font-weight: 700; }
+.trainingButton:disabled { opacity: .5; cursor: default; }
+.trainingButton:not(:disabled):hover, #testTimeline [role='tab']:hover { border-color: var(--accent-half); }
+.trainingButton:focus-visible, #testTimeline [role='tab']:focus-visible, #progressDialog select:focus-visible, .heatKey:focus-visible {
+    outline: 2px solid var(--accent-half); outline-offset: 2px;
+}
+header right { gap: 12px; }
+#openProgress { font-size: 1.4rem; min-height: 3.8rem; padding: .7rem 1.2rem; }
+#drillBanner {
+    box-sizing: border-box; width: min(100%, 900px); display: flex; justify-content: space-between;
+    align-items: center; gap: 12px; padding: 8px 12px; border: 1px solid var(--accent-half);
+    background: var(--foreground); border-radius: 8px; font-size: 13px; flex-shrink: 0;
+}
+#drillBanner span { line-height: 1.4; }
+#drillBanner:not([hidden]) ~ .typingArea { margin-top: 8px; }
+.typingArea #recordInfo, .typingArea #storageNotice { display: none; }
+#main:has(#testTimeline:not([hidden])) .typingArea {
+    grid-template-rows: auto auto auto auto;
+    row-gap: 5px;
+    padding: 5px 0;
+}
+#main:has(#testTimeline:not([hidden])) #resultActions {
+    grid-column: 2; grid-row: 1 / 5; display: flex; flex-wrap: wrap;
+    align-content: center; align-items: center; justify-content: flex-end; gap: 6px;
+    max-width: 340px;
+}
+#main:has(#testTimeline:not([hidden])) #resetButton {
+    min-width: 0; min-height: 36px; padding: 7px 12px; font-size: 14px;
+}
+#main:has(#testTimeline:not([hidden])) #recordInfo {
+    grid-column: 1; grid-row: 3; display: flex; align-items: center; gap: 8px; flex-wrap: wrap;
+    font-family: 'Radio Canada', sans-serif; font-size: 12px; line-height: 1.35;
+}
+#main:has(#testTimeline:not([hidden])) #storageNotice {
+    grid-column: 1; grid-row: 4; display: block; margin: 0; font-size: 11px; line-height: 1.3;
+}
+.rankBadge {
+    display: inline-flex; padding: 3px 8px; border: 1px solid var(--accent-half);
+    border-radius: 100px; color: var(--accent-half); font-size: 12px; font-weight: 700;
+    white-space: nowrap;
+}
+#testTimeline { padding: 12px 16px; }
+#testTimeline .analysisHeader {
+    display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-shrink: 0;
+    padding-bottom: 8px; border-bottom: 1px solid var(--grey);
+}
+#testTimeline h2 { font-size: 17px; margin: 0; white-space: nowrap; }
+#testTimeline [role='tablist'] { display: flex; gap: 4px; overflow-x: auto; padding: 3px; }
+#testTimeline [role='tab'] { min-height: 34px; padding: 6px 12px; font-size: 13px; white-space: nowrap; }
+#testTimeline [role='tab'][aria-selected='true'] { border-color: var(--accent-half); color: var(--accent-half); font-weight: 700; }
+#testTimeline [role='tabpanel'] { min-height: 0; overflow: auto; flex: 0 1 auto; }
+#testTimeline #timelinePanel { display: flex; flex-direction: column; overflow: hidden; }
+#testTimeline .timelineLegend, #timelineSummary { font-size: 12px; }
+#testTimeline #timelineSummary { line-height: 1.35; margin: 2px 0 6px; }
+#testTimeline .timelineScroll { min-height: 0; flex: 0 1 auto; overflow: auto; }
+#timelinePlot .timelineSpeed { stroke: var(--accent-half); stroke-width: 2; fill: none; }
+#timelineDetails { font-size: 12px; min-height: 1.5em; max-height: 3em; }
+#mistakesPanel, #heatmapPanel { padding-top: 12px; }
+#testTimeline h3 { font-size: 15px; margin: 8px 0; }
+#testTimeline table, #progressDialog table { width: 100%; border-collapse: collapse; font-size: 13px; text-align: left; }
+#testTimeline th, #testTimeline td, #progressDialog th, #progressDialog td { padding: 9px 10px; border-bottom: 1px solid var(--grey); }
+#testTimeline th, #progressDialog th { font-weight: 700; color: var(--accent-half); }
+.heatKeyboard { display: flex; flex-direction: column; gap: 5px; margin: 18px 0 12px; min-width: 460px; }
+.heatRow { display: flex; gap: 5px; }
+.heatKey {
+    flex: 1 1 0; min-width: 24px; height: 42px; border: 1px solid var(--grey); border-radius: 5px;
+    background: transparent; color: var(--text-color); font: 13px/1 'Cascadia Code',monospace; cursor: pointer;
+}
+.heatKey:disabled { opacity: .35; cursor: default; }
+.heatKey.perfect { background: color-mix(in srgb,var(--green) 18%,transparent); }
+.heatKey.hasErrors { background: color-mix(in srgb,var(--red) var(--heat-strength),transparent); }
+.heatDetails { min-height: 1.5em; }
+#progressDialog {
+    box-sizing: border-box; width: min(920px, calc(100vw - 32px)); max-height: calc(100dvh - 32px);
+    padding: 22px; border: 1px solid var(--grey); border-radius: 14px;
+    background: var(--background); color: var(--text-color); font: 14px/1.5 'Radio Canada',sans-serif;
+    overflow: auto;
+}
+#progressDialog::backdrop { background: rgb(0 0 0 / .55); }
+.progressHeader { display: flex; justify-content: space-between; align-items: center; gap: 16px; }
+#progressDialog .eyebrow { margin: 0; font-size: 11px; text-transform: uppercase; letter-spacing: .12em; color: var(--accent-half); }
+#progressDialog h2 { font-size: 28px; margin: 2px 0 12px; }
+#progressDialog h3 { margin: 16px 0 8px; font-size: 18px; }
+.progressFilters { display: flex; gap: 12px; margin: 16px 0; }
+.progressFilters label { flex: 1; display: flex; flex-direction: column; gap: 4px; font-size: 12px; min-width: 0; }
+#progressDialog select { box-sizing: border-box; width: 100%; padding: 8px; border: 1px solid var(--grey); border-radius: 6px; background: var(--foreground); color: var(--text-color); font: inherit; }
+#progressContent { overflow-x: auto; }
+.progressTrend { display: block; width: 100%; min-width: 360px; margin: 18px 0; border: 1px solid var(--grey); border-radius: 8px; background: var(--foreground); }
+.progressTrend text { fill: var(--text-color); font-size: 11px; }
+.progressTrend .trendGrid { stroke: var(--grey); stroke-width: 1; opacity: .5; }
+.progressFooter { display: flex; gap: 12px; align-items: center; justify-content: space-between; margin-top: 18px; font-size: 12px; }
+.muted { opacity: .75; font-size: 12px; }
+@media (max-width: 900px) {
+    #main:has(#testTimeline:not([hidden])) .typingArea { grid-template-columns: minmax(0,1fr); }
+    #main:has(#testTimeline:not([hidden])) #resultActions { grid-column: 1; grid-row: 5; max-width: none; justify-content: flex-start; }
+    #main:has(#testTimeline:not([hidden])) #recordInfo { font-size: 11px; }
+    #testTimeline .analysisHeader { gap: 8px; }
+    #testTimeline h2 { font-size: 15px; }
+    #testTimeline [role='tab'] { padding: 6px 8px; font-size: 12px; }
+    #openProgress { padding: .5rem .7rem; font-size: 1.2rem; }
+    header right { gap: 6px; }
+}
+@media (max-width: 600px) {
+    #testTimeline { padding: 8px; }
+    #testTimeline .analysisHeader { display: block; }
+    #testTimeline .analysisHeader h2 { margin-bottom: 3px; }
+    #testTimeline [role='tablist'] { padding: 2px; }
+    #drillBanner { flex-direction: column; align-items: flex-start; gap: 4px; }
+    .progressFilters { flex-direction: column; gap: 8px; }
+    #progressDialog { padding: 14px; }
+    .progressFooter { align-items: flex-start; }
+    .trainingButton, #main:has(#testTimeline:not([hidden])) #resetButton { font-size: 12px; padding: 6px 8px; }
+}
+@media (max-height: 480px) {
+    #main:has(#testTimeline:not([hidden])) { gap: 3px; }
+    #main:has(#testTimeline:not([hidden])) .typingArea { grid-template-columns: minmax(0,1fr) auto; row-gap: 2px; padding: 2px 0; }
+    #main:has(#testTimeline:not([hidden])) #resultActions { grid-column: 2; grid-row: 1 / 5; justify-content: flex-end; max-width: 300px; }
+    #main:has(#testTimeline:not([hidden])) #testResults, #main:has(#testTimeline:not([hidden])) #scoreAndClock { font-size: 13px; }
+    #recordSummary { font-size: 10px; }
+    #testTimeline { padding: 6px 10px; }
+    #testTimeline .analysisHeader { display: flex; padding-bottom: 3px; }
+    #testTimeline .timelineLegend { margin: 2px 0; }
+    #testTimeline #timelineSummary { font-size: 11px; }
+    #testTimeline [role='tab'] { min-height: 28px; padding: 4px 8px; }
+    #drillBanner { padding: 3px 8px; }
+}

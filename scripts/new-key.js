@@ -34,7 +34,7 @@ input.addEventListener('keydown', function(e) {
 
         // Regular keydown effect + keymapping
         let char = e.code;
-        if (localStorage.getItem('keyRemapping') === 'true' && char in keyboardMap) {
+        if (settingsStorage.getItem('keyRemapping') === 'true' && char in keyboardMap) {
             if (!e.shiftKey) {
                 fakeInput.innerText += processMapping(false, char);
             } else {
@@ -48,6 +48,7 @@ input.addEventListener('keydown', function(e) {
         if (e.key !== "Enter" && e.key !== " " && e.key !== "Backspace" &&
             e.key !== "Tab" && e.key !== "Escape") {
             testTimeline.input(before, fakeInput.innerText, correctAnswer);
+            if (fakeInput.innerText !== before && fakeInput.innerText.length > before.length) trainingStarted();
         }
     }
 });
@@ -59,6 +60,7 @@ input.addEventListener('input', function() {
     // Detect Space
     if (input.value.slice(-1) === " ") {
         input.value = input.value.slice(0,-1);
+        processUnknown(input.value);
         // Process Enter
         processEnter();
     } else {
@@ -189,7 +191,7 @@ function processUnknown(key) {
                 shift = keysList[key[x]][1];
 
             // Process mapping if required, otherwise simply use the same character
-            if (localStorage.getItem('keyRemapping') === 'true' && char in keyboardMap) {
+            if (settingsStorage.getItem('keyRemapping') === 'true' && char in keyboardMap) {
                 print += processMapping(shift, char);
             } else {
                 print += key[x];
@@ -199,6 +201,7 @@ function processUnknown(key) {
 
     // Record only newly inserted mobile characters, before the observer can alter them.
     testTimeline.input(fakeInput.innerText, print, correctAnswer);
+    if (print !== fakeInput.innerText && print.length >= fakeInput.innerText.length) trainingStarted();
     // Place the container value in the cosmetic input field
     fakeInput.innerText = print;
 }
@@ -245,6 +248,7 @@ function processLastWord() {
 function processEnter() {
     if (checkAnswer() && gameON) {
         // Handles correct word
+        testTimeline.input(correctAnswer, correctAnswer + ' ', correctAnswer + ' ');
         testTimeline.complete(correctAnswer);
         handleCorrectWord();
 
@@ -252,7 +256,7 @@ function processEnter() {
         updateScoreText();
 
         // Ends game if score has reached max score
-        if (score >= scoreMax) {
+        if (!timeLimitMode && score >= scoreMax) {
             endGame();
         }
 
@@ -262,6 +266,7 @@ function processEnter() {
         letterIndex = 0;
     } else {
         testTimeline.input(fakeInput.innerText, fakeInput.innerText + ' ', correctAnswer);
+        trainingStarted();
         console.log('error space');
         input.value += ' ';
         fakeInput.innerText += ' '; // used a non-breaking space due to flexbox

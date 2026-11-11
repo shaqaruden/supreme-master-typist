@@ -31,32 +31,32 @@ let prompt = document.querySelector('.prompt'),
 let promptOffset = 0,
     promptLines = 3,
     score, // tracks the current number of correct words the user has typed
-    scoreMax = localStorage.getItem('scoreMax') || 50, // total number of words the user must type
-    timeMax = localStorage.getItem('timeMax') || 60, // time limit for continuous typing
-    wordMax = localStorage.getItem('wordMax') || 50, // word limit for continuous typing
+    scoreMax = settingsStorage.getItem('scoreMax') || 50, // total number of words the user must type
+    timeMax = settingsStorage.getItem('timeMax') || 60, // time limit for continuous typing
+    wordMax = settingsStorage.getItem('wordMax') || 50, // word limit for continuous typing
     seconds = 0, // tracks the number of seconds%minutes*60 the current test has been running for 
     minutes = 0, // tracks the number of minutes the current test has been running for
     gameON = false, // set to true when user starts typing in input field
     correct = 0, // number of correct keystrokes during a game
     errors = 0, // number of typing errors during a game
-    currentLevel = localStorage.getItem('currentLevel') || 1, // int representation of the current level, which determines which letter set to test
+    currentLevel = settingsStorage.getItem('currentLevel') || 1, // int representation of the current level, which determines which letter set to test
     correctAnswer, // string representation of the current correct word
     letterIndex = 0, // Keeps track of where in a word the user is; Increment with every keystroke except ' ', return, and backspace; Decrement for backspace, and reset for the other 2
-    onlyLower = !localStorage.getItem('onlyLower') || localStorage.getItem('onlyLower') === 'true', // If only lower is true, include only words without capital letters
+    onlyLower = !settingsStorage.getItem('onlyLower') || settingsStorage.getItem('onlyLower') === 'true', // If only lower is true, include only words without capital letters
     answerString = '', // A string representation of the words for the current test. After a correct word is typed, it is removed from the beginning of answerString. By the end of the test, there should be no words in answerString
     keyboardMap = layoutMaps['colemak'],
     letterDictionary = levelDictionaries['colemak'],
-    currentLayout = localStorage.getItem('currentLayout') || 'colemak',
-    currentKeyboard = localStorage.getItem('currentKeyboard') || 'ansi',
+    currentLayout = settingsStorage.getItem('currentLayout') || 'colemak',
+    currentKeyboard = settingsStorage.getItem('currentKeyboard') || 'ansi',
     shiftDown = false, // tracks whether the shift key is currently being pushed
     fullSentenceMode = false, // if true, all prompts will be replace with sentences
-    fullSentenceModeEnabled = localStorage.getItem('fullSentenceModeEnabled') === 'true',
-    requireBackspaceCorrection = !localStorage.getItem('requireBackspaceCorrection') || localStorage.getItem('requireBackspaceCorrection') === 'true',
-    timeLimitMode = localStorage.getItem('timeLimitMode') === 'true',
-    wordScrollingMode = !localStorage.getItem('wordScrollingMode') || localStorage.getItem('wordScrollingMode') === 'true', // true by default.
-    showCheatsheet = !localStorage.getItem('showCheatsheet') || localStorage.getItem('showCheatsheet') === 'true', // true by default.
-    playSoundOnClick = localStorage.getItem('playSoundOnClick') === 'true',
-    playSoundOnError = localStorage.getItem('playSoundOnError') === 'true',
+    fullSentenceModeEnabled = settingsStorage.getItem('fullSentenceModeEnabled') === 'true',
+    requireBackspaceCorrection = !settingsStorage.getItem('requireBackspaceCorrection') || settingsStorage.getItem('requireBackspaceCorrection') === 'true',
+    timeLimitMode = settingsStorage.getItem('timeLimitMode') === 'true',
+    wordScrollingMode = !settingsStorage.getItem('wordScrollingMode') || settingsStorage.getItem('wordScrollingMode') === 'true', // true by default.
+    showCheatsheet = !settingsStorage.getItem('showCheatsheet') || settingsStorage.getItem('showCheatsheet') === 'true', // true by default.
+    playSoundOnClick = settingsStorage.getItem('playSoundOnClick') === 'true',
+    playSoundOnError = settingsStorage.getItem('playSoundOnError') === 'true',
     deleteFirstLine = false, // make this true every time we finish typing a line
     deleteLatestWord = false, // if true, delete last word typed. Set to true whenever a word is finished
     sentenceStartIndex = -1, // keeps track of where we are in full sentence mode
@@ -68,7 +68,7 @@ let promptOffset = 0,
     answerWordArray = [];
 
 let specialKeys = ["Pause", "ScrollLock", "Insert", "PageUp", "PageDown", "Delete", "End", "F1", "F2", "F3", "F4", "F5", "F6", "F7", "F8", "F9", "F10", "F11", "F12", "Escape", "Tab", "CapsLock", "Control", "Alt", "ContextMenu", "Home", "ArrowLeft", "ArrowUp", "ArrowRight", "ArrowDown", "NumLock", "Backspace", "Shift", " ", "Enter", "OS" ], // list of all keys we typically want to ignore
-    punctuation = localStorage.getItem('punctuation') || '', // this contains punctuation to include in our test sets. Set to empty at first
+    punctuation = settingsStorage.getItem('punctuation') || '', // this contains punctuation to include in our test sets. Set to empty at first
     requiredLetters = '', //levelDictionaries[currentLayout]['lvl'+currentLevel]+punctuation;; // keeps track of letters that still need to be used in the current level
     initialCustomKeyboardState = '', // saves a temporary copy of a keyboard layout that a user can return to by discarding changes
     initialCustomLevelsState = ''; // saves a temporary copy of custom levels that a user can return to by discarding changes
@@ -113,7 +113,7 @@ function start() {
     }
 
     // if true, user keyboard input will be mapped to the chosen layout. No mapping otherwise
-    if (localStorage.getItem('keyRemapping') === 'true') {
+    if (settingsStorage.getItem('keyRemapping') === 'true') {
         mappingStatusButton.setAttribute('data-value','on');
     }
 
@@ -124,7 +124,7 @@ function start() {
 
     navInit();
 
-    if (localStorage.getItem('preferenceMenu')) {
+    if (settingsStorage.getItem('preferenceMenu')) {
         openMenu();
     }
 
@@ -216,35 +216,16 @@ function init() {
 
 /*________________Timers and Listeners___________________*/
 
-// makes the clock tic
-setInterval(()=> {
-    if(gameON) {
-        if(!timeLimitMode){
-            seconds++;
-            if(seconds >= 60) {
-                seconds = 0;
-                minutes++;
-            }
-        } else {
-            // clock counting down
-            seconds--;
-            if(seconds <= 0 && minutes <=0){
-                endGame();
-            }
-            if(seconds < 0) {
-                seconds = 59;
-                minutes--;
-            }
-        }
-        resetTimeText();
-    }
-}, 1000);
-
-// starts the timer when there is any change to the input field
-input.addEventListener('input', function() { // changed to 'input' from 'keydown'
-    gameON = true;
-});
-
+// Derive the display and deadline from the first insertion, not interval phase.
+setInterval(() => {
+    if (!gameON || trainingSessionFinished || trainingStartedAt === null) return;
+    const elapsed = Math.max(0, (performance.now() - trainingStartedAt) / 1000);
+    const display = timeLimitMode ? Math.max(0, Math.ceil(Number(timeMax) - elapsed)) : Math.floor(elapsed);
+    minutes = Math.floor(display / 60);
+    seconds = display % 60;
+    resetTimeText();
+    if (timeLimitMode && elapsed >= Number(timeMax)) endGame();
+}, 100);
 
 /*___________________________________________________________*/
 /*____________________preference menu________________________*/
@@ -310,13 +291,13 @@ preferenceButton.addEventListener('click', ()=> {
 // capital letters allowed
 capitalLettersAllowed.addEventListener('click', ()=> {
     onlyLower = !onlyLower;
-    localStorage.setItem('onlyLower', onlyLower);
+    settingsStorage.setItem('onlyLower', onlyLower);
     reset();
 });
 
 requireBackspaceCorrectionToggle.addEventListener('click', ()=> {
     requireBackspaceCorrection = !requireBackspaceCorrection;
-    localStorage.setItem('requireBackspaceCorrection', requireBackspaceCorrection);
+    settingsStorage.setItem('requireBackspaceCorrection', requireBackspaceCorrection);
     reset();
 });
 
@@ -327,7 +308,7 @@ function toggleFullSentenceModeUI() {
 
 fullSentenceModeToggle.addEventListener('click', ()=> {
     fullSentenceModeEnabled = !fullSentenceModeEnabled;
-    localStorage.setItem('fullSentenceModeEnabled', fullSentenceModeEnabled);
+    settingsStorage.setItem('fullSentenceModeEnabled', fullSentenceModeEnabled);
     toggleFullSentenceModeUI();
     if (fullSentenceModeEnabled) {
         switchLevel(8);
@@ -363,7 +344,7 @@ timeLimitModeButton.addEventListener('click', ()=> {
         // change mode logic here
         timeLimitMode = true;
         toggleTimeLimitModeUI();
-        localStorage.setItem('timeLimitMode', timeLimitMode);
+        settingsStorage.setItem('timeLimitMode', timeLimitMode);
         reset();
     }
 });
@@ -381,14 +362,13 @@ timeLimitModeInput.addEventListener('change', ()=> {
     // set the dom element to a whole number (in case the user puts in a decimal)
     timeLimitModeInput.value = wholeSecond;
     timeMax = wholeSecond;
-    localStorage.setItem('timeMax', timeMax);
+    settingsStorage.setItem('timeMax', timeMax);
 
     seconds = wholeSecond % 60;
     minutes = Math.floor(wholeSecond / 60);
 
 
-    gameON = false;
-    resetTimeText();
+    reset();
 });
 
 // word Limit mode butto; if this is checked, uncheck button for time limit and vice versa
@@ -414,7 +394,7 @@ wordLimitModeButton.addEventListener('click', ()=> {
         timeLimitModeInput.classList.toggle('dispose');
         wordLimitModeInput.classList.toggle('dispose');
 
-        localStorage.setItem('timeLimitMode', timeLimitMode);
+        settingsStorage.setItem('timeLimitMode', timeLimitMode);
 
         reset();
     }
@@ -436,8 +416,8 @@ wordLimitModeInput.addEventListener('change', ()=> {
         wordLimitModeInput.value = 10;
     }
 
-    localStorage.setItem('scoreMax', scoreMax);
-    localStorage.setItem('wordMax', scoreMax);
+    settingsStorage.setItem('scoreMax', scoreMax);
+    settingsStorage.setItem('wordMax', scoreMax);
 
     reset();
 });
@@ -451,7 +431,7 @@ function toggleWordScrollingModeUI() {
 
 wordScrollingModeButton.addEventListener('click', ()=> {
     wordScrollingMode = !wordScrollingMode;
-    localStorage.setItem('wordScrollingMode', wordScrollingMode);
+    settingsStorage.setItem('wordScrollingMode', wordScrollingMode);
     toggleWordScrollingModeUI();
     reset();
 });
@@ -466,7 +446,7 @@ punctuationModeButton.addEventListener('click', ()=> {
         punctuation = '';
     }
 
-    localStorage.setItem('punctuation', punctuation);
+    settingsStorage.setItem('punctuation', punctuation);
 
     createTestSets();
     updateCheatsheetStyling(currentLevel);
@@ -484,21 +464,21 @@ showCheatsheetButton.addEventListener('click', ()=> {
     }
 
     showCheatsheet = !showCheatsheet;
-    localStorage.setItem('showCheatsheet', showCheatsheet);
+    settingsStorage.setItem('showCheatsheet', showCheatsheet);
     navInit();
 });
 
 // play sound on click toggle
 playSoundOnClickButton.addEventListener('click', ()=> {
     playSoundOnClick = !playSoundOnClick;
-    localStorage.setItem('playSoundOnClick', playSoundOnClick);
+    settingsStorage.setItem('playSoundOnClick', playSoundOnClick);
     navInit();
 });
 
 // play sound on error toggle
 playSoundOnErrorButton.addEventListener('click', ()=> {
     playSoundOnError = !playSoundOnError;
-    localStorage.setItem('playSoundOnError', playSoundOnError);
+    settingsStorage.setItem('playSoundOnError', playSoundOnError);
     navInit();
 });
 
@@ -760,9 +740,10 @@ function updateLayoutUI() {
 
 // function for layout change
 function changeLayout(value) {
+    trainingExitDrill(false);
     currentLayout = value;
     layout.setAttribute('data-value', value);
-    localStorage.setItem('currentLayout', currentLayout);
+    settingsStorage.setItem('currentLayout', currentLayout);
     updateLayoutUI();
     // reset everything
     init();
@@ -771,9 +752,10 @@ function changeLayout(value) {
 
 // function for keyboard change
 function changeKeyboard(value) {
+    trainingExitDrill(false);
     currentKeyboard = value;
     keyboard.setAttribute('data-value', value);
-    localStorage.setItem('currentKeyboard', currentKeyboard);
+    settingsStorage.setItem('currentKeyboard', currentKeyboard);
     updateLayoutUI();
     // reset everything
     init();
@@ -788,7 +770,7 @@ openUIButton.addEventListener('click', ()=> {
 // called whenever a user opens the custom editor. Sets correct displays and saves an initial state
 // of the keyboard to refer back to if the user wants to discard changes
 function startCustomKeyboardEditing(user) {
-    if (!localStorage.customLevelDictionary || !localStorage.customLayoutMap) {
+    if (!settingsStorage.customLevelDictionary || !settingsStorage.customLayoutMap) {
         initialCustomKeyboardState = Object.assign({}, layoutMaps['custom']);
         initialCustomLevelsState = Object.assign({}, levelDictionaries['custom']);
     } else {
@@ -800,7 +782,7 @@ function startCustomKeyboardEditing(user) {
     loadCustomLayout(initialCustomKeyboardState);
     loadCustomLevels(initialCustomLevelsState);
 
-    if (user !== true && localStorage.customLevelDictionary && localStorage.customLayoutMap) {
+    if (user !== true && settingsStorage.customLevelDictionary && settingsStorage.customLayoutMap) {
         return;
     }
 
@@ -1156,7 +1138,8 @@ for (let x = 0; x < buttons.length; x++) {
 
 // switches to level 
 function switchLevel(lev) {
-    localStorage.setItem('currentLevel', lev);
+    trainingExitDrill(false);
+    settingsStorage.setItem('currentLevel', lev);
     console.log(lev);
         // stop timer
         gameON = false;
@@ -1253,6 +1236,7 @@ resetButton.addEventListener('click', ()=> {
 // button is called or when a level is changed
 // Set a new prompt word and change variable text
 function reset() {
+    trainingReset();
     testTimeline.reset();
     document.querySelector("#testTimeline").hidden = true;
     // reset nav first
@@ -1386,51 +1370,32 @@ function checkAnswer() {
 }
 
 function endGame() {
-    renderTestTimeline(testTimeline.finish());
-    // erase prompt
-    prompt.classList.toggle('dispose');
-
-    // make resetButton visible
-    resetButton.classList.remove('dispose');
-
-    // pause timer
+    if (trainingSessionFinished) return;
+    trainingSessionFinished = true;
+    const result = testTimeline.finish();
     gameON = false;
-
-    // calculate wpm
-    let wpm;
-    if(!timeLimitMode) {
-        wpm = (((correct+errors)/5)/(minutes+(seconds/60))).toFixed(2);
-    } else {
-        wpm = (((correct+errors)/5)/(timeLimitModeInput.value/60)).toFixed(2);
-    }
-    // set accuracyText
-    accuracyText.innerHTML='Accuracy: ' + ((100*correct)/(correct+errors)).toFixed(2) + '%';
-    wpmText.innerHTML = 'WPM: ' + wpm;
-    // make accuracy visible
-    testResults.classList.toggle('transparent');
-
-    // set correct and errors counts to 0
-    correct = 0;
-    errors = 0;
-
-    // change focus to resetButton
-    resetButton.focus();
-
-
-    // update scoreText
-    updateScoreText();
-    // clear input field
-    // document.querySelector('#userInput').value = '';
+    renderTestTimeline(result);
+    prompt.classList.add('dispose');
+    resetButton.classList.remove('dispose');
+    accuracyText.textContent = 'Accuracy: ' + result.accuracy.toFixed(2) + '%';
+    wpmText.textContent = 'WPM: ' + result.wpm.toFixed(2);
+    testResults.classList.remove('transparent');
+    score = result.words;
+    scoreText.textContent = result.words + '/' + scoreMax;
+    timeText.textContent = (result.duration / 1000).toFixed(1) + 's';
+    trainingComplete(result);
+    correct = errors = 0;
     input.value = '';
     fakeInput.innerText = '';
-    // set letter index (where in the word the user currently is)
-    // to the beginning of the word
     letterIndex = 0;
+    resetButton.focus();
 }
 
 // generates a single line to be appended to the answer array
 // if a line with a maximum number of words is desired, pass it in as a parameter
 function generateLine(maxWords) {
+    const drillLine = trainingLine(maxWords);
+    if (drillLine !== null) return drillLine;
     let str = '';
 
     if(fullSentenceMode) {

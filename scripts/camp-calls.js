@@ -94,7 +94,7 @@ document.querySelector('#sub backdrop').addEventListener('click', function() {
 
 // Simulate proper hover for the Custom Enter Key
 document.addEventListener('mouseover', function(event) {
-    if (localStorage.currentKeyboard !== 'iso') {return;}
+    if (settingsStorage.currentKeyboard !== 'iso') {return;}
 
     let enterKeys = document.querySelectorAll('#customEnterTop, #customEnterBottom');
     
@@ -148,11 +148,11 @@ document.addEventListener('click', function(event) {
         keymapping = document.getElementById('keymapping');
     
     if (target === keymapping || keymapping.contains(target)) {
-        if (localStorage.getItem('keyRemapping') === 'true') {
-            localStorage.setItem('keyRemapping', false);
+        if (settingsStorage.getItem('keyRemapping') === 'true') {
+            settingsStorage.setItem('keyRemapping', false);
             keymapping.setAttribute('data-value','off');
         } else {
-            localStorage.setItem('keyRemapping', true);
+            settingsStorage.setItem('keyRemapping', true);
             keymapping.setAttribute('data-value','on');
         }
         // Clear input field when toggled
@@ -161,6 +161,7 @@ document.addEventListener('click', function(event) {
         input.value = '';
         fakeInput.innerText = '';
         fakeObserver.observe(fakeInput, {childList: true});
+        reset();
     }
 });
 
@@ -172,7 +173,7 @@ function storeCustomLayout() {
 
 // Automatically restore custom layout if available in localstorage
 (function() {
-    if (!localStorage.customLevelDictionary || !localStorage.customLayoutMap) {
+    if (!settingsStorage.customLevelDictionary || !settingsStorage.customLayoutMap) {
         return;
     }
 

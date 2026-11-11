@@ -1,61 +1,50 @@
 # Supreme Master Typist
-A keyboard practice app for Dvorak, Colemak, and other layouts, with typing stats and a timeline showing exactly where mistakes happen.
 
-Try [Supreme Master Typist](https://shaqaruden.github.io/dvokakdubs/), hosted with GitHub Pages.
+A keyboard practice app that turns mistakes into your next practice session. Train with Dvorak, Colemak, QWERTY and other layouts, see where your accuracy slips, and track your improvement in this browser.
 
-Supreme Master Typist is a fork of [Colemak Camp](https://github.com/ColemakCamp/colemakcamp.github.io), which is a fork of [Colemak Club](https://github.com/gnusenpai/colemakclub), which itself is a fork of [Colemak Academy](https://colemak.academy/).
+**[Start practising](https://shaqaruden.github.io/supreme-master-typist/)** · [Source on GitHub](https://github.com/shaqaruden/supreme-master-typist)
 
-## Key Features
-Supreme Master Typist adds:
-- A current-test event timeline showing completed words and mistakes in red.
-- Selectable events with timestamps and expected versus typed characters.
-- A results layout that keeps typing stats and Reset visible.
+## Practice, understand, improve
 
-Features inherited from Colemak Camp include:
-- Responsive design, fits in more display sizes.
-- Customizable theme colors, including light and dark modes.
-- Several more menu options are now saved in local storage, thus remembered if you refresh.
-- Cheatsheet keyboard is sized more accurately.
-- Custom input keyboard changes according to selected keyboard type.
-- Overall change in the design language.
-- Persistent custom layout via local storage.
-- Support for phones and tablets running Android (and iOS hopefully).
+- **Compact results:** WPM, accuracy, completed words and elapsed time stay beside Try again and Practice my mistakes.
+- **Speed and event timeline:** follow your speed over time and select individual completed words or red mistake markers to inspect timestamps and expected versus typed characters.
+- **Mistake analysis:** find troublesome letters, their error rates and frequent character confusions, including space and end-of-word mistakes.
+- **Keyboard heatmap:** see errors on the selected keyboard and layout, with a text breakdown and a legend that distinguishes untried keys from accurate ones.
+- **Targeted drills:** practise 20 words focused on your mistakes, using your current level and preferences. Drill results have their own record category; return to regular practice without losing your test limits.
+- **Local Progress view:** compare WPM and accuracy trends, browse dated results and switch comparison groups. Progress is available between tests so opening it cannot interrupt an active test.
+- **Personal bests:** track speed and accuracy records for matching layout, keyboard, level, mode, limit and preferences, with custom layouts and drills compared separately.
+- **Skill-based ranks:** rise from Apprentice through Typist, Adept, Expert and Master to Supreme Master by meeting both speed and accuracy targets. Standard tests must last at least 30 seconds and complete at least 10 words to qualify; drills do not award ranks.
+- **Distinctive identity:** a typography-led Supreme Master Typist wordmark and crown/SMT mark, with matching app icons and share imagery.
 
-### Planned Features
-- Custom themes.
-- Sharing and loading custom themes via links.
+Existing practice tools include progressive learning levels, timed and word-count tests, full-sentence practice, configurable case and punctuation, remapping, multiple keyboard shapes and a persistent custom layout. The interface supports desktop, mobile and tablet screens, theme customisation, and light and dark modes.
 
-## Build Tools
-This project does not rely on npm or other similar tools. You may utilize any toolchain you want as long as you can reproduce same results.
+## Your data
 
-- Install VS Code
-- Install extensions:
-    - [Nu-Minify](https://marketplace.visualstudio.com/items?itemName=emapco.nu-minify)
-    - [Live Sass Compiler](https://marketplace.visualstudio.com/items?itemName=glenn2223.live-sass)
-    - [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer)
-- Update VS Code settings:
-``` json
-{
-    "minify.js": {
-        "output": {
-            "comments": "/^!/"
-        }
-    },
-    "minify.minifyExistingOnSave": true,
-    "liveSassCompile.settings.useNewCompiler": true,
-    "liveServer.settings.donotShowInfoMsg": true
-}
+Progress is saved locally in this browser, without an account or server. The app retains up to 500 completed sessions and stores summary metrics and practice settings, rather than raw typed text or keystroke logs. Reset or abandoned tests are not saved. Clear history removes session records while keeping keyboard and theme preferences. Browser storage restrictions or a full store may prevent saving; typing remains available.
+
+WPM uses correctly entered characters divided by five and actual elapsed time. Accuracy counts correct character attempts out of all character attempts, retaining mistakes even after correction. The same measurements power results, charts, records and ranks.
+
+## Run and contribute
+
+This is a static HTML, CSS and vanilla JavaScript site. There is no runtime framework or backend. Serve the repository with a local web server, for example:
+
+```sh
+python3 -m http.server 8000
 ```
 
-- Watch Sass
-    - You will need to click 'Watch Sass' to compile `scss` files to `css`. Once clicked, all changes will be automatically compiled within that session. Note that this does not minify anything.
-- Minify on Save
-    - Using the settings above will enable this feature; otherwise enable it manually from extension settings.
-    - If the file you're minifying already has an existing `.min` file, simply saving the source will update the minified file. So, you need to save the `main.css` file to update the `main.min.css` file.
-    - If there is no existing `.min` file, run the `Minify` command on the source file. (Press F1 to search available commands, `>minify`.)
+Then open <http://localhost:8000>. Source JavaScript lives in `scripts/`; the page loads the matching `.min.js` deployment files. Main styles are authored in `styles/main.scss` and compiled/minified to CSS; feature styles may be loaded directly. Keep generated deployment assets in sync with their sources when making changes. Node's built-in test runner can run the deterministic tests:
 
-## Pull Requests
-Please create an issue and await my response before submitting any pull requests.
+```sh
+node --test tests/*.test.cjs
+```
+
+The existing VS Code workflow uses [Live Sass Compiler](https://marketplace.visualstudio.com/items?itemName=glenn2223.live-sass), [Nu-Minify](https://marketplace.visualstudio.com/items?itemName=emapco.nu-minify) and [Live Server](https://marketplace.visualstudio.com/items?itemName=ritwickdey.LiveServer). Any reproducible equivalent toolchain is welcome.
+
+Please open an issue before submitting a pull request.
+
+## Upstream credit
+
+Supreme Master Typist is a fork of [Colemak Camp](https://github.com/ColemakCamp/colemakcamp.github.io), which is a fork of [Colemak Club](https://github.com/gnusenpai/colemakclub), which itself is a fork of [Colemak Academy](https://colemak.academy/).
 
 ## License
 This project is under the **[GNU Affero General Public License v3.0 (AGPL-3.0)](https://www.gnu.org/licenses/agpl-3.0.en.html)**, which is the same as Colemak Club and Colemak Academy, as seen in this [issue](https://github.com/Nemcorp/layoutacademy/issues/2).

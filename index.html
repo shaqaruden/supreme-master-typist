@@ -7,7 +7,7 @@
    <meta name="HandheldFriendly" content="true">
    <meta name="description" content="Practice Dvorak, Colemak, and other keyboard layouts with timed tests and a mistake timeline.">
    <meta name="author" content="Supreme Master Typist">
-   <link rel="canonical" href="https://shaqaruden.github.io/dvokakdubs/">
+   <link rel="canonical" href="https://shaqaruden.github.io/supreme-master-typist/">
 
    <link rel="apple-touch-icon" type="image/png" sizes="180x180" href="app/180.png">
    <link rel="icon" type="image/png" sizes="32x32" href="app/32.png">
@@ -33,8 +33,8 @@
    <meta property="og:site_name" content="Supreme Master Typist">
    <meta property="og:title" content="Supreme Master Typist">
    <meta property="og:type" content="website">
-   <meta property="og:url" content="https://shaqaruden.github.io/dvokakdubs/">
-   <meta property="og:image" content="https://shaqaruden.github.io/dvokakdubs/app/ograph.png?20230031164825">
+   <meta property="og:url" content="https://shaqaruden.github.io/supreme-master-typist/">
+   <meta property="og:image" content="https://shaqaruden.github.io/supreme-master-typist/app/ograph.png?v=smt-20261111">
    <meta property="og:image:type" content="image/png">
    <meta property="og:image:width" content="1200">
    <meta property="og:image:height" content="630">
@@ -42,12 +42,14 @@
    <meta property="og:description" content="Practice Dvorak, Colemak, and other keyboard layouts with timed tests and a mistake timeline.">
 
    <meta name="twitter:title" content="Supreme Master Typist">
-   <meta name="twitter:image" content="https://shaqaruden.github.io/dvokakdubs/app/twitter.png?20230031164825">
+   <meta name="twitter:image" content="https://shaqaruden.github.io/supreme-master-typist/app/twitter.png?v=smt-20261111">
    <meta name="twitter:card" content="summary_large_image">
 
+   <script type="text/javascript" src="scripts/settings-storage.min.js"></script>
    <script type="text/javascript" src="scripts/theme-stuff-re.min.js"></script>
    <link rel="stylesheet" href="styles/test-timeline.css">
    <link rel="stylesheet" href="styles/brand.css">
+   <link rel="stylesheet" href="styles/training.css">
 </head>
 <body>
    <curtain class="dispose" id="sub">
@@ -90,10 +92,11 @@
    <content class="hidemenu">
       <header class="contain">
          <left>
-            <i class="fa fa-logo" role="img" aria-label="Supreme Master Typist"></i>
-            <span class="logo brand-wordmark">Supreme Master Typist</span>
+            <img class="brand-mark" src="app/brand-mark.svg" alt="Supreme Master Typist">
+            <span class="logo brand-wordmark"><span class="brand-wordmark-top">Supreme Master</span><span class="brand-wordmark-bottom">Typist</span></span>
          </left>
          <right>
+            <button type="button" id="openProgress" class="trainingButton">Progress</button>
             <div id="selectors">
                <div id="layout">
                   <btn data-tippy-content="Change Keyboard Layout" data-tippy-placement="bottom-end">
@@ -354,11 +357,16 @@
       </menubar>
       <main class="contain">
          <section id="main">
+            <div id="drillBanner" hidden><span id="drillReason"></span><button type="button" id="exitDrill" class="trainingButton">Back to regular practice</button></div>
             <div class="typingArea">
                <div class="fade" id="fadeElement">
                   <h2 class="dispose prompt"></h2>
                </div>
-               <button id="resetButton" class="dispose">Reset</button>
+               <div id="resultActions" hidden>
+                  <button id="resetButton" class="dispose">Try again</button>
+                  <button id="practiceMistakes" type="button" class="trainingButton primary">Practice my mistakes</button>
+                  <button id="resultsProgress" type="button" class="trainingButton">Progress</button>
+               </div>
                <span id="fakeInput" data-hits='0'></span>
                <input id="userInput" type="text" spellcheck="false" autocomplete="off">
                <div id="scoreAndClock">
@@ -369,15 +377,28 @@
                   <div id="accuracyText"></div>
                   <div id="wpmText"></div>
                </div>
+               <div id="recordInfo"><span id="rankBadge" class="rankBadge">Unranked</span><span id="recordSummary"></span></div>
+               <p id="storageNotice" role="status"></p>
             </div>
             <section id="testTimeline" aria-labelledby="timelineTitle" hidden>
-               <h2 id="timelineTitle">Test timeline</h2>
-               <p class="timelineLegend">● Completed word <span>× Mistake</span></p>
-               <p id="timelineSummary"></p>
-               <div class="timelineScroll" tabindex="0" aria-label="Typing event timeline; scroll horizontally for more events">
-                  <div id="timelinePlot"></div>
+               <div class="analysisHeader">
+                  <h2 id="timelineTitle">Test analysis</h2>
+                  <div role="tablist" aria-label="Test analysis">
+                     <button type="button" role="tab" id="timelineTab" data-analysis-tab="timeline" aria-controls="timelinePanel" aria-selected="true">Timeline</button>
+                     <button type="button" role="tab" id="mistakesTab" data-analysis-tab="mistakes" aria-controls="mistakesPanel" aria-selected="false" tabindex="-1">Mistakes</button>
+                     <button type="button" role="tab" id="heatmapTab" data-analysis-tab="heatmap" aria-controls="heatmapPanel" aria-selected="false" tabindex="-1">Heatmap</button>
+                  </div>
                </div>
-               <p id="timelineDetails" aria-live="polite">Select a marker to see its details.</p>
+               <div id="timelinePanel" role="tabpanel" aria-labelledby="timelineTab">
+                  <p class="timelineLegend">● Completed word <span>× Mistake</span> · Line: speed</p>
+                  <p id="timelineSummary"></p>
+                  <div class="timelineScroll" tabindex="0" aria-label="Typing event timeline; scroll for more events">
+                     <div id="timelinePlot"></div>
+                  </div>
+                  <p id="timelineDetails" aria-live="polite">Select a marker to see its details.</p>
+               </div>
+               <div id="mistakesPanel" role="tabpanel" aria-labelledby="mistakesTab" tabindex="0" hidden></div>
+               <div id="heatmapPanel" role="tabpanel" aria-labelledby="heatmapTab" tabindex="0" hidden></div>
             </section>
             <div class="cheatsheetContainer">
                <div class="cheatsheet"></div>
@@ -389,8 +410,8 @@
       </main>
       <footer class="contain">
          <about>
-            <a href="https://github.com/shaqaruden/dvokakdubs">
-               <i class="fa fa-logo"></i>
+            <a href="https://github.com/shaqaruden/supreme-master-typist">
+               <img class="brand-mark" src="app/brand-mark.svg" alt="">
                <span>Supreme Master Typist</span>
             </a>
             <vr>|</vr>
@@ -398,10 +419,16 @@
          </about>
          <github>
             <i class="fa fa-github"></i>
-            <a href="https://github.com/shaqaruden/dvokakdubs" target="_blank">Source on GitHub</a>
+            <a href="https://github.com/shaqaruden/supreme-master-typist" target="_blank">Source on GitHub</a>
          </github>
       </footer>
    </content>
+   <dialog id="progressDialog" aria-labelledby="progressTitle">
+      <div class="progressHeader"><div><p class="eyebrow">Your practice, over time</p><h2 id="progressTitle">Progress</h2></div><button type="button" id="closeProgress" class="trainingButton" autofocus>Close</button></div>
+      <div class="progressFilters"><label>Layout<select id="progressLayout"></select></label><label>Test settings<select id="progressGroup"></select></label></div>
+      <div id="progressContent"></div>
+      <div class="progressFooter"><span>Up to 500 sessions · saved only in this browser</span><button type="button" id="clearHistory" class="trainingButton">Clear history</button></div>
+   </dialog>
    <script type="text/javascript" src="lib/popper.min.js"></script>
    <script type="text/javascript" src="lib/tippy.min.js"></script>
    <script type="text/javascript" src="scripts/libconfig.min.js"></script>
@@ -409,6 +436,8 @@
    <script type="text/javascript" src="scripts/word-list.min.js"></script>
    <script type="text/javascript" src="scripts/keyboard-divs.min.js"></script>
    <script type="text/javascript" src="scripts/test-timeline.min.js"></script>
+   <script type="text/javascript" src="scripts/training-core.min.js"></script>
+   <script type="text/javascript" src="scripts/training-ui.min.js"></script>
    <script type="text/javascript" src="scripts/app.min.js"></script>
    <script type="text/javascript" src="scripts/new-key.min.js"></script>
    <script type="text/javascript" src="scripts/camp-calls.min.js"></script>

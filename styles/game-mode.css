@@ -193,7 +193,7 @@ html[data-game-mode='true'] #testTimeline [role='tab'][aria-selected='true'].rpg
 html[data-game-mode='true'] #selectors { gap: 5px; }
 html[data-game-mode='true'] #selectors btn.rpgui-button {
     height: 100%; min-height: 0; min-width: 0; display: flex; align-items: center;
-    border: 0; border-radius: 0; padding: 0 12px; gap: 6px; white-space: nowrap;
+    border: 0; border-radius: 0; padding: 0 24px; gap: 6px; white-space: nowrap;
     font-size: 10px;
 }
 html[data-game-mode='true'] #selectors btn.rpgui-button > .fa { margin: 0; font-size: 11px; }
@@ -221,14 +221,30 @@ html[data-game-mode='true'] #selectors list li:is(:hover,:focus-visible,[aria-se
 html[data-game-mode='true'] #selectors list li:focus-visible { box-shadow: inset 0 0 0 2px #ffe4a3; }
 #selectors btn:focus-visible { outline: 2px solid var(--accent-half); outline-offset: 2px; }
 @media (max-width: 980px) {
-    html[data-game-mode='true'] #selectors btn.rpgui-button { font-size: 8px; padding: 0 10px; }
+    html[data-game-mode='true'] #selectors btn.rpgui-button { font-size: 8px; padding: 0 18px; }
 }
 @media (max-width: 600px) {
     html[data-game-mode='true'] #selectors { gap: 3px; }
-    html[data-game-mode='true'] #selectors btn.rpgui-button { font-size: 7px; padding: 0 7px; gap: 4px; }
+    html[data-game-mode='true'] #selectors btn.rpgui-button { font-size: 7px; padding: 0 14px; gap: 4px; }
     html[data-game-mode='true'] #layout btn > span { max-width: 86px; overflow: hidden; text-overflow: ellipsis; }
     html[data-game-mode='true'] #selectors #keymapping { margin-left: 0; }
     html[data-game-mode='true'] #selectors btn.rpgui-button > .fa { font-size: 9px; }
     html[data-game-mode='true'] #layout list { width: max(100%,165px); }
     html[data-game-mode='true'] #keyboard list { width: max(100%,135px); }
+}
+
+/* Leave room between header text and the sprite's decorative side edges. */
+html[data-game-mode='true'] #openProgress.rpgui-button { padding-left: 24px; padding-right: 24px; }
+@media (max-width: 600px) {
+    html[data-game-mode='true'] header { height: auto; min-height: 7.5rem; gap: 8px; flex-wrap: wrap; padding-block: 8px; }
+    html[data-game-mode='true'] header right { flex-wrap: wrap; justify-content: flex-end; margin-left: auto; height: auto; }
+    html[data-game-mode='true'] #openProgress.rpgui-button { padding-left: 14px; padding-right: 14px; }
+}
+
+html[data-game-mode='true'] #selectors #keymapping btn.rpgui-button { padding-inline: 24px; }
+@media (max-width: 980px) {
+    html[data-game-mode='true'] #selectors #keymapping btn.rpgui-button { padding-inline: 18px; }
+}
+@media (max-width: 600px) {
+    html[data-game-mode='true'] #selectors #keymapping btn.rpgui-button { padding-inline: 14px; }
 }

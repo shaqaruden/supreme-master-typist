@@ -23,6 +23,16 @@ const assert = require('node:assert/strict');
             await page.locator('.timelineScroll').evaluate(el => {el.scrollTop = el.scrollHeight;});
             const reset = await page.locator('#resetButton').boundingBox();
             assert.ok(reset.y >= 0 && reset.y + reset.height < viewport.height, 'Reset remains visible while graph scrolls');
+            await page.evaluate(() => {
+                testTimeline.reset();
+                testTimeline.input('', 'c', 'cat');
+                testTimeline.complete('cat');
+                renderTestTimeline(testTimeline.finish());
+            });
+            await page.waitForFunction(()=>{const el=document.querySelector('#timelinePlot');return Math.abs(el.offsetHeight - parseFloat(el.style.height)) <= 1;});
+            const emptySpace = await page.locator('.timelineScroll').evaluate(el =>
+                el.clientHeight - document.querySelector('#timelinePlot').offsetHeight);
+            assert.ok(emptySpace <= 8, `compact chart does not stretch into unused space: ${emptySpace}px`);
             await page.locator('#resetButton').click();
             assert.equal(await page.locator('#testTimeline').isVisible(), false);
             assert.equal(await page.locator('.cheatsheetContainer').isVisible(),true);

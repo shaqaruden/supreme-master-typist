@@ -51,7 +51,7 @@
     #testTimeline .timelineLegend span { display: inline-block; }
 }
 
-/* Finished tests use the available height; only the graph scrolls. */
+/* Results fit their content; only charts taller than the available space scroll. */
 main.contain:has(#testTimeline:not([hidden])) {
     min-height: 0;
     min-width: 0;
@@ -109,14 +109,14 @@ main.contain:has(#testTimeline:not([hidden])) {
 #testTimeline:not([hidden]) {
     display: flex;
     flex-direction: column;
-    flex: 1 1 0;
+    flex: 0 1 auto;
     min-height: 0;
     margin: 0;
     overflow: hidden;
 }
 #testTimeline:not([hidden]) :is(h2, p) { flex-shrink: 0; }
 #testTimeline .timelineScroll {
-    flex: 1 1 0;
+    flex: 0 1 auto;
     min-height: 0;
     overflow: auto;
 }

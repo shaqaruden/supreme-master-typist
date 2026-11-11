@@ -102,12 +102,12 @@
             <button type="button" id="openProgress" class="trainingButton">Progress</button>
             <div id="selectors">
                <div id="layout">
-                  <btn data-tippy-content="Change Keyboard Layout" data-tippy-placement="bottom-end">
+                  <btn role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false" aria-controls="layoutOptions" data-tippy-content="Change Keyboard Layout" data-tippy-placement="bottom-end">
                      <label>Layout:</label>
                      <span></span>
                      <i class="fa fa-arrow-bottom"></i>
                   </btn>
-                  <list class="close hide">
+                  <list id="layoutOptions" role="listbox" aria-label="Keyboard layout" class="close hide">
                      <ul>
                         <gr>
                            <li data-value="colemak">Colemak</li>
@@ -136,12 +136,12 @@
                   </list>
                </div>
                <div id="keyboard">
-                  <btn data-tippy-content="Change Keyboard Type" data-tippy-placement="bottom-start">
+                  <btn role="button" tabindex="0" aria-haspopup="listbox" aria-expanded="false" aria-controls="keyboardOptions" data-tippy-content="Change Keyboard Type" data-tippy-placement="bottom-start">
                      <label>Keyboard:</label>
                      <span></span>
                      <i class="fa fa-arrow-bottom"></i>
                   </btn>
-                  <list class="close hide">
+                  <list id="keyboardOptions" role="listbox" aria-label="Keyboard type" class="close hide">
                      <ul>
                         <gr>
                            <li data-value="ansi">ANSI</li>
@@ -153,13 +153,15 @@
                   </list>
                </div>
                <div id="keymapping">
-                  <btn data-tippy-content="Toggle Keyboard Mapping" data-tippy-placement="bottom-end">
+                  <btn role="button" tabindex="0" aria-label="Keyboard mapping" aria-pressed="false" data-tippy-content="Toggle Keyboard Mapping" data-tippy-placement="bottom-end">
                      <label>Mapping:</label>
                      <span>
                         <toggle>
                            <i class="fa fa-keyboard"></i>
                         </toggle>
                      </span>
+                     <i class="fa fa-keyboard game-mapping-icon" aria-hidden="true"></i>
+                     <span class="game-mapping-state" aria-hidden="true">Off</span>
                   </btn>
                </div>
             </div>

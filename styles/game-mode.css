@@ -187,3 +187,48 @@ html[data-game-mode='true'] #gameModeToggle.rpgui-container {
 html[data-game-mode='true'] #testTimeline [role='tab'][aria-selected='true'].rpgui-button {
     box-shadow: inset 0 0 0 2px #ffe4a3; color: #fff5ca;
 }
+
+/* Header controls use RPGUI buttons, with the legacy pill hidden in Game Mode. */
+.game-mapping-state, .game-mapping-icon { display: none; }
+html[data-game-mode='true'] #selectors { gap: 5px; }
+html[data-game-mode='true'] #selectors btn.rpgui-button {
+    height: 100%; min-height: 0; min-width: 0; display: flex; align-items: center;
+    border: 0; border-radius: 0; padding: 0 12px; gap: 6px; white-space: nowrap;
+    font-size: 10px;
+}
+html[data-game-mode='true'] #selectors btn.rpgui-button > .fa { margin: 0; font-size: 11px; }
+html[data-game-mode='true'] #selectors #keymapping { margin-left: 4px; }
+html[data-game-mode='true'] #selectors #keymapping btn > span:not(.game-mapping-state) { display: none; }
+html[data-game-mode='true'] #selectors #keymapping btn label { margin: 0; }
+html[data-game-mode='true'] #selectors #keymapping btn .game-mapping-icon { display: inline-block; }
+html[data-game-mode='true'] #selectors #keymapping btn .game-mapping-state {
+    display: inline; width: auto; height: auto; border: 0; border-radius: 0; background: transparent;
+    padding: 0; overflow: visible; color: inherit;
+}
+html[data-game-mode='true'] #keymapping[data-value='on'] btn.rpgui-button {
+    background-image: url('../vendor/rpgui/img/button-golden.png'); color: #fff1b5;
+}
+html[data-game-mode='true'] #selectors list ul {
+    border: 6px solid transparent; border-radius: 0;
+    border-image: url('../vendor/rpgui/img/border-image-grey.png') 3 repeat;
+    background: url('../vendor/rpgui/img/background-image-grey.png') center repeat;
+    padding: 4px 0; max-height: min(65dvh,430px); overflow-y: auto;
+}
+html[data-game-mode='true'] #layout list { width: max(100%,220px); }
+html[data-game-mode='true'] #keyboard list { width: max(100%,170px); }
+html[data-game-mode='true'] #selectors list li { background: transparent; color: var(--text-color); }
+html[data-game-mode='true'] #selectors list li:is(:hover,:focus-visible,[aria-selected='true']) { background: #72513c; color: #fff1bd; outline: none; }
+html[data-game-mode='true'] #selectors list li:focus-visible { box-shadow: inset 0 0 0 2px #ffe4a3; }
+#selectors btn:focus-visible { outline: 2px solid var(--accent-half); outline-offset: 2px; }
+@media (max-width: 980px) {
+    html[data-game-mode='true'] #selectors btn.rpgui-button { font-size: 8px; padding: 0 10px; }
+}
+@media (max-width: 600px) {
+    html[data-game-mode='true'] #selectors { gap: 3px; }
+    html[data-game-mode='true'] #selectors btn.rpgui-button { font-size: 7px; padding: 0 7px; gap: 4px; }
+    html[data-game-mode='true'] #layout btn > span { max-width: 86px; overflow: hidden; text-overflow: ellipsis; }
+    html[data-game-mode='true'] #selectors #keymapping { margin-left: 0; }
+    html[data-game-mode='true'] #selectors btn.rpgui-button > .fa { font-size: 9px; }
+    html[data-game-mode='true'] #layout list { width: max(100%,165px); }
+    html[data-game-mode='true'] #keyboard list { width: max(100%,135px); }
+}

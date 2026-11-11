@@ -8,9 +8,18 @@ const GameMode = (() => {
     let lastCompletion=null;
     const decorated=new Map();
     const observer=new MutationObserver(()=>decorate());
+    const mappingObserver=new MutationObserver(()=>updateMappingState());
+    function updateMappingState() {
+        const control=document.querySelector('#keymapping');
+        const button=control?.querySelector('btn');
+        if(!button)return;
+        const on=control.getAttribute('data-value')==='on';
+        button.setAttribute('aria-pressed',String(on));
+        button.querySelector('.game-mapping-state').textContent=on?'On':'Off';
+    }
     const frames=[
         ['#gameModeToggle','framed-golden-2'],['.typingArea','framed-golden'],['#testTimeline','framed'],['#progressDialog,#rankDialog,#sub card','framed-golden-2'],
-        ['#drillBanner','framed-grey'],['#gameAnnouncement','framed-golden'],['#selectors btn,.cheatsheet key,.rankStep,sidebar .nav li span','framed-grey']
+        ['#drillBanner','framed-grey'],['#gameAnnouncement','framed-golden'],['.cheatsheet key,.rankStep,sidebar .nav li span','framed-grey']
     ];
     function decorate() {
         for(const [node,classes] of decorated){
@@ -23,7 +32,7 @@ const GameMode = (() => {
             node.classList.add(...added);decorated.set(node,added);
         }
         frames.forEach(([selector,frame])=>document.querySelectorAll(selector).forEach(node=>add(node,['rpgui-container',frame])));
-        document.querySelectorAll('.trainingButton,#resetButton,#gameModeToggle,#testTimeline [role="tab"],.rankBadge').forEach(node=>add(node,['rpgui-button']));
+        document.querySelectorAll('.trainingButton,#resetButton,#gameModeToggle,#selectors btn,#testTimeline [role="tab"],.rankBadge').forEach(node=>add(node,['rpgui-button']));
     }
     function observeDecorations() {
         observer.disconnect();decorate();
@@ -79,7 +88,8 @@ const GameMode = (() => {
     }
     apply();
     document.addEventListener('DOMContentLoaded',()=>{
-        updateButton();observeDecorations();
+        updateButton();observeDecorations();updateMappingState();
+        mappingObserver.observe(document.querySelector('#keymapping'),{attributes:true,attributeFilter:['data-value']});
         document.querySelector('#gameModeToggle').addEventListener('click',()=>{
             const resume=gameON;
             setEnabled(!enabled);

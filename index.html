@@ -344,6 +344,12 @@
       </menubar>
       <main class="contain">
          <section id="main">
+            <div id="movementPractice" hidden>
+               <button type="button" id="startMovement" class="trainingButton">Practise new-key movements</button>
+               <label for="movementHand">Hand:</label>
+               <select id="movementHand"><option value="both">Both hands</option><option value="left">Left only</option><option value="right">Right only</option></select>
+               <span id="movementHelp">Reach to a new key and return. Each sequence stays on one hand.</span>
+            </div>
             <div id="drillBanner" hidden><span id="drillReason"></span><button type="button" id="exitDrill" class="trainingButton">Back to regular practice</button></div>
             <div class="typingArea">
                <div class="fade" id="fadeElement">
@@ -431,6 +437,7 @@
    <script type="text/javascript" src="scripts/keyboard-divs.min.js"></script>
    <script type="text/javascript" src="scripts/test-timeline.min.js"></script>
    <script type="text/javascript" src="scripts/training-core.min.js"></script>
+   <script type="text/javascript" src="scripts/movement-practice.min.js"></script>
    <script type="text/javascript" src="scripts/training-ui.min.js"></script>
    <script type="text/javascript" src="scripts/app.min.js"></script>
    <script type="text/javascript" src="scripts/new-key.min.js"></script>

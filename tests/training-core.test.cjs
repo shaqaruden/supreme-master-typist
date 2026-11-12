@@ -8,7 +8,7 @@ function core() {
     vm.runInContext(fs.readFileSync('scripts/training-core.js', 'utf8'), context);
     return context.TrainingCore;
 }
-const normal = {layout:'colemak',keyboard:'ansi',level:3,mode:'words',limit:30,onlyLower:true,punctuation:'',requireBackspaceCorrection:false,keyRemapping:false,customFingerprint:'',drill:false};
+const normal = {layout:'colemak',keyboard:'ansi',level:3,mode:'words',limit:30,onlyLower:true,punctuation:'',requireBackspaceCorrection:false,keyRemapping:false,customFingerprint:'',drill:false,practice:'',practiceHand:''};
 function session(overrides = {}) {
     return {id:'one',date:'2026-11-11T12:00:00.000Z',duration:30000,words:10,attempts:160,correctAttempts:150,wpm:60,accuracy:93.75,settings:{...normal},...overrides};
 }
@@ -221,4 +221,12 @@ test('rank tiers require the approved minimum learning level in the same qualify
     assert.equal(c.earnedRank(saved,normal).name,'Apprentice','does not combine speed from an easy test with level from a slower test');
     saved.push(session({id:'earned',wpm:55,accuracy:94,settings:{...normal,level:3}}));
     assert.equal(c.earnedRank(saved,{...normal,level:1}).name,'Adept','one earned rank survives switching back to an earlier level');
+});
+
+test('movement results stay separate from mistake drills and cannot award a rank',()=>{
+ const c=core();const movement={...normal,layout:'dvorak',level:6,drill:true,practice:'movement',practiceHand:'both'};
+ assert.notEqual(c.comparisonKey(movement),c.comparisonKey({...movement,practice:''}));
+ assert.notEqual(c.comparisonKey(movement),c.comparisonKey({...movement,practiceHand:'left'}));
+ assert.notEqual(c.comparisonKey(movement),c.comparisonKey({...movement,drill:false,practice:''}));
+ assert.equal(c.rankFor(session({duration:60000,words:20,wpm:200,accuracy:100,settings:movement})).index,-1);
 });

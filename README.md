@@ -85,3 +85,6 @@ Some of the icons have been taken from Flaticon, which requires attribution. Bel
 | fa-keyboard     | [Flaticon](https://www.flaticon.com/free-icon/keyboard_4122844)                    |
 
 Icons not listed here are either from Material Icons, or created from scratch.
+### Dvorak movement practice
+
+On Dvorak levels 2–6, choose **Practise new-key movements** above the typing area. Pick both hands, left only or right only. Each 20-sequence drill introduces new keys in blocks using familiar → new → familiar returns on the same hand; familiar anchors vary between runs. Level 5 has only right-hand additions. **Back to regular practice** restores the previous test settings. Movement results have separate comparisons for each hand selection and never award skill ranks.

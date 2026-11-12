@@ -20,13 +20,14 @@
             onlyLower:settings.onlyLower !== false, punctuation:text(settings.punctuation),
             requireBackspaceCorrection:settings.requireBackspaceCorrection === true,
             keyRemapping:settings.keyRemapping === true, customFingerprint:text(settings.customFingerprint),
-            drill:settings.drill === true
+            drill:settings.drill === true, practice:settings.practice==='movement'?'movement':'',
+            practiceHand:settings.practice==='movement'&&['left','right','both'].includes(settings.practiceHand)?settings.practiceHand:''
         };
     }
     function comparisonKey(settings) {
         const s = settingsOf(settings);
         return JSON.stringify([s.layout,s.keyboard,String(s.level),s.mode,s.limit,s.onlyLower,s.punctuation,
-            s.requireBackspaceCorrection,s.keyRemapping,s.customFingerprint,s.drill]);
+            s.requireBackspaceCorrection,s.keyRemapping,s.customFingerprint,s.drill,s.practice,s.practiceHand]);
     }
     function layoutKey(settings) {
         const s = settingsOf(settings);

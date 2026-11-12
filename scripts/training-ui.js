@@ -22,10 +22,10 @@ function trainingSettings() {
     return {
         layout:currentLayout, keyboard:currentKeyboard, level:fullSentenceMode ? 'sentences' : Number(currentLevel),
         mode:timeLimitMode ? 'time' : 'words', limit:trainingDrill ? 20 : Number(timeLimitMode ? timeMax : wordMax),
-        onlyLower, punctuation, requireBackspaceCorrection,
+        onlyLower:trainingDrill?.kind==='movement'?true:onlyLower, punctuation:trainingDrill?.kind==='movement'?'':punctuation, requireBackspaceCorrection,
         keyRemapping:settingsStorage.getItem('keyRemapping') === 'true',
         customFingerprint:currentLayout === 'custom' ? JSON.stringify({map:keyboardMap,levels:levelDictionaries.custom}) : '',
-        drill:!!trainingDrill
+        drill:!!trainingDrill, practice:trainingDrill?.kind==='movement'?'movement':'', practiceHand:trainingDrill?.kind==='movement'?trainingDrill.hand:''
     };
 }
 function trainingReset() {
@@ -41,12 +41,14 @@ function trainingReset() {
     if (banner) banner.hidden = !trainingDrill;
     if (trainingDrill) {
         trainingDrill.index = 0;
-        trainingDrill.words = trainingDrill.words.slice(1).concat(trainingDrill.words[0]);
+        if(trainingDrill.kind==='movement')trainingDrill.words=MovementPractice.create({layout:currentLayout,level:currentLevel,hand:trainingDrill.hand,levels:levelDictionaries.dvorak,map:keyboardMap}).words;
+        else trainingDrill.words = trainingDrill.words.slice(1).concat(trainingDrill.words[0]);
         timeLimitMode = false;
         scoreMax = 20;
         fullSentenceMode = false;
     }
     scoreText.style.display = timeLimitMode ? 'none' : 'flex';
+    trainingMovementControls();
 }
 function trainingStarted() {
     if (trainingSessionFinished) return;
@@ -91,6 +93,25 @@ function trainingStartDrill() {
     if (!trainingDrill) trainingNormal = {timeLimitMode,scoreMax,fullSentenceMode};
     trainingDrill = {...drill,index:0};
     document.querySelector('#drillReason').textContent = `Targeted drill · 20 words. ${drill.reason}`;
+    reset();
+}
+function trainingMovementControls() {
+    const panel=document.querySelector('#movementPractice');
+    if(!panel)return;
+    panel.hidden=currentLayout!=='dvorak'||Number(currentLevel)<2||Number(currentLevel)>6||fullSentenceMode||!!trainingDrill;
+    const select=document.querySelector('#movementHand');
+    for(const option of select.options){
+        option.disabled=!MovementPractice.create({layout:currentLayout,level:currentLevel,hand:option.value,levels:levelDictionaries.dvorak,map:keyboardMap}).words.length;
+    }
+    if(select.selectedOptions[0]?.disabled)select.value='both';
+}
+function trainingStartMovement() {
+    if(currentLayout!=='dvorak'||fullSentenceMode||trainingDrill)return;
+    const drill=MovementPractice.create({layout:currentLayout,level:currentLevel,hand:document.querySelector('#movementHand').value,levels:levelDictionaries.dvorak,map:keyboardMap});
+    if(!drill.words.length)return;
+    trainingNormal={timeLimitMode,scoreMax,fullSentenceMode};
+    trainingDrill={...drill,kind:'movement',index:0};
+    document.querySelector('#drillReason').textContent=`Movement practice · Level ${currentLevel} · ${drill.hand==='both'?'Both hands (same-hand reaches)':drill.hand==='left'?'Left hand':'Right hand'} · New keys: ${drill.newKeys.map(key=>key.toUpperCase()).join(', ')} · 20 return sequences. Excluded from skill ranks.`;
     reset();
 }
 function trainingSelectTab(name, focus = false) {
@@ -176,7 +197,7 @@ function trainingComplete(result) {
     trainingRenderMistakes(result);trainingRenderHeatmap(result);trainingSelectTab('timeline');
 }
 function trainingGroupLabel(settings) {
-    return `${settings.drill?'Drill · ':''}${settings.level==='sentences'?'Sentences':'Level '+settings.level} · ${settings.mode==='time'?settings.limit+'s':settings.limit+' words'} · ${settings.keyboard}${settings.keyRemapping?' · mapped':''}${settings.onlyLower?'':' · capitals'}${settings.punctuation?' · punctuation':''}${settings.requireBackspaceCorrection?' · backspace':' · retry'}${settings.customFingerprint?' · custom '+trainingFingerprint(settings.customFingerprint):''}`;
+    return `${settings.practice==='movement'?`Movement${settings.practiceHand?' ('+(settings.practiceHand==='both'?'both hands':settings.practiceHand+' hand')+')':''} · `:settings.drill?'Drill · ':''}${settings.level==='sentences'?'Sentences':'Level '+settings.level} · ${settings.mode==='time'?settings.limit+'s':settings.limit+' words'} · ${settings.keyboard}${settings.keyRemapping?' · mapped':''}${settings.onlyLower?'':' · capitals'}${settings.punctuation?' · punctuation':''}${settings.requireBackspaceCorrection?' · backspace':' · retry'}${settings.customFingerprint?' · custom '+trainingFingerprint(settings.customFingerprint):''}`;
 }
 function trainingFingerprint(text) {let n=2166136261;for(const char of text)n=Math.imul(n^char.charCodeAt(0),16777619);return (n>>>0).toString(16);}
 function trainingTrend(rows, field, label, color, fixedMax) {
@@ -268,6 +289,8 @@ function initTrainingUI() {
     });
     document.querySelector('#practiceMistakes').addEventListener('click',trainingStartDrill);
     document.querySelector('#exitDrill').addEventListener('click',()=>trainingExitDrill());
+    document.querySelector('#startMovement').addEventListener('click',trainingStartMovement);
+    trainingMovementControls();
     const tabs=[...document.querySelectorAll('[data-analysis-tab]')];
     tabs.forEach((button,i)=>{
         button.addEventListener('click',()=>trainingSelectTab(button.dataset.analysisTab));

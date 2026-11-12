@@ -325,6 +325,6 @@ html[data-game-mode='true'] .rpguiDropdownList li:focus-visible { box-shadow: in
 
 /* Keep the drill exit label inside the sprite, even beside a long description. */
 html[data-game-mode='true'] #drillBanner #exitDrill.rpgui-button {
-    flex-shrink: 0; padding: 10px 24px; white-space: nowrap;
+    flex-shrink: 0; padding: 10px 32px; white-space: nowrap;
 }
 html[data-game-mode='true'] #drillBanner #drillReason { min-width: 0; }

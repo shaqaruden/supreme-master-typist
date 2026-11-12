@@ -10,3 +10,12 @@ test('Dvorak levels 2–6 use only familiar/new/same-familiar same-hand return r
  }
 });
 test('movement practice excludes other layouts and levels 1, All Words and sentences',()=>{const c=setup();for(const [layout,level] of [['colemak',3],['lefthandeddvorak',3],['dvorak',1],['dvorak',7],['dvorak','sentences'],['dvorak',2.5]])assert.equal(c.MovementPractice.create({layout,level,levels:c.defs.dvorak,map:c.maps.dvorak}).words.length,0);});
+test('both-hand practice mixes sides throughout instead of a left block then a right block',()=>{
+ const c=setup();vm.runInContext('Math.random=()=>0.1',c);
+ for(const level of [2,3,4,6]){
+  const result=c.MovementPractice.create({layout:'dvorak',level,hand:'both',levels:c.defs.dvorak,map:c.maps.dvorak});
+  const hands=result.words.map(word=>c.MovementPractice.handOf(word[1],c.maps.dvorak));
+  const transitions=hands.slice(1).filter((hand,i)=>hand!==hands[i]).length;
+  assert.ok(transitions>1,'level '+level+' mixes hands across the drill');
+ }
+});

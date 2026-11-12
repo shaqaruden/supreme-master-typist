@@ -18,6 +18,17 @@
             const count=Math.floor(20/targets.length)+(index<20%targets.length?1:0);
             for(let i=0;i<count;i++){const anchor=anchors[(i+index)%anchors.length];words.push(anchor+key+anchor);}
         });
+        if(hand==='both'){
+            const queues={left:words.filter(word=>handOf(word[1],map)==='left'),right:words.filter(word=>handOf(word[1],map)==='right')};
+            words.length=0;
+            // Randomize which hand leads each pair, keeping both sides distributed
+            // through the session and preserving each hand's new-key progression.
+            while(queues.left.length&&queues.right.length){
+                const first=Math.random()<0.5?'left':'right', second=first==='left'?'right':'left';
+                words.push(queues[first].shift(),queues[second].shift());
+            }
+            words.push(...queues.left,...queues.right);
+        }
         return {words,newKeys:targets.map(item=>item.key),hand};
     }
     root.MovementPractice=Object.freeze({create,handOf});
